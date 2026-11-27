@@ -694,7 +694,32 @@ body {
 
 .website .konfig-titel { font-weight: 600; }
 .website .konfig label { display: inline-flex; align-items: center; gap: 0.4rem; }
-.website .konfig input[type="color"] { width: 2.75rem; height: 2.5rem; padding: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); cursor: pointer; }
+/* Farbwähler: Der Browser setzt um das Farbfeld einen Innenabstand und einen eigenen Rand, dadurch sah es
+   aus wie ein Ring um einen Block mit anderen Ecken. Hier füllt die Farbe das ganze Feld, die Ecken
+   gibt der Rahmen vor (overflow: hidden schneidet die Farbfläche passend zu). */
+.website .konfig input[type="color"],
+.editor-block input[type="color"],
+.neu-formular input[type="color"] {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.website .konfig input[type="color"] { width: 2.75rem; height: 2.5rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+
+.website .konfig input[type="color"]::-webkit-color-swatch-wrapper,
+.editor-block input[type="color"]::-webkit-color-swatch-wrapper,
+.neu-formular input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+
+.website .konfig input[type="color"]::-webkit-color-swatch,
+.editor-block input[type="color"]::-webkit-color-swatch,
+.neu-formular input[type="color"]::-webkit-color-swatch { border: 0; border-radius: 0; }
+
+.website .konfig input[type="color"]::-moz-color-swatch,
+.editor-block input[type="color"]::-moz-color-swatch,
+.neu-formular input[type="color"]::-moz-color-swatch { border: 0; border-radius: 0; }
 
 .neu-formular { display: flex; flex-direction: column; gap: 0.25rem; }
 .neu-formular .editor-feld input,
