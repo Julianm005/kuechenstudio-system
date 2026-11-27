@@ -109,11 +109,11 @@
     { "von": "2026-12-24", "bis": "2027-01-01", "grund": "Betriebsferien" }
   ],
   "nachbarorte": [
-    { "name": "Coswig", "slug": "coswig", "km": 9 },
-    { "name": "Radebeul", "slug": "radebeul", "km": 17 },
-    { "name": "Großenhain", "slug": "grossenhain", "km": 22 },
-    { "name": "Riesa", "slug": "riesa", "km": 28 },
-    { "name": "Dresden", "slug": "dresden", "km": 25 }
+    { "name": "Coswig", "slug": "coswig", "km": 9, "text": "Aus Coswig sind Sie in rund 15 Minuten bei uns in Meißen. Viele Kundinnen und Kunden verbinden die Beratung mit einem Spaziergang durch die Altstadt." },
+    { "name": "Radebeul", "slug": "radebeul", "km": 17, "text": "Von Radebeul brauchen Sie etwa 25 Minuten. Das Aufmaß machen wir auf Wunsch direkt bei Ihnen in Radebeul." },
+    { "name": "Großenhain", "slug": "grossenhain", "km": 22, "text": "Aus Großenhain erreichen Sie uns in etwa 30 Minuten. Aufmaß, Lieferung und Montage übernehmen wir auch bei Ihnen in Großenhain." },
+    { "name": "Riesa", "slug": "riesa", "km": 28, "text": "Von Riesa sind es rund 35 Minuten Fahrt. Für die erste Beratung planen wir gern einen Termin am Nachmittag, damit sich die Anreise lohnt." },
+    { "name": "Dresden", "slug": "dresden", "km": 25, "text": "Aus Dresden fahren Sie etwa 30 Minuten zu uns nach Meißen. Lieferung und Montage in Dresden gehören selbstverständlich zu unserem Service." }
   ],
   "faq": [
     {

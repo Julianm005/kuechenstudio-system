@@ -117,6 +117,18 @@ function hero(studio, route, tel, ort) {
   </section>`;
 }
 
+/** Ortsseite: eigener Text zur Anreise aus dem Nachbarort (Feld „text“ im JSON, optional). */
+function ortAnfahrt(ort) {
+  if (!ort?.text) return '';
+  return `
+  <section class="sektion sektion-flaeche" aria-labelledby="${idp}anfahrt-titel">
+    <div class="inhalt inhalt-schmal">
+      <h2 id="${idp}anfahrt-titel">So kommen Sie aus ${esc(ort.name)} zu uns</h2>
+      <p class="hero-lead">${esc(ort.text)}</p>
+    </div>
+  </section>`;
+}
+
 function aktionenBlock(aktionen, heute) {
   if (!aktionen.length) return '';
   return `
@@ -303,6 +315,7 @@ export function renderSeite(studio, { theme, heute, minuten, ort = null }) {
   return [
     kopf(studio, route, aktionen, tel, oeffnungsStatus(studio, heute, minuten)),
     hero(studio, route, tel, ort),
+    ortAnfahrt(ort),
     aktionenBlock(aktionen, heute),
     vorteile(studio),
     galerie(studio),

@@ -8,6 +8,7 @@ import {
 } from './zeit.js';
 import { spurenHtml, tageImBereich } from './zeitstrahl.js';
 import { zeigeMeldungen } from './meldungen.js';
+import { sucheVorschauHtml } from './suche.js';
 import { erzeugeJsonLd, setzeJsonLd } from './jsonld.js';
 import { pruefe, STATUS_ZEICHEN } from './check.js';
 import {
@@ -65,7 +66,8 @@ let offenesPanel = null; // 'check' | 'daten' | 'editor' | null
 let editorStudioId = null; // für welches Studio ist das Editor-Formular gebaut?
 const letztePunkte = new Map(); // Studio → Punkte des letzten Qualitäts-Checks (für die Meldung „7/9 → 8/9“)
 const letzteMeldung = new Map(); // Bereich → Zeitpunkt, damit Meldungen nicht bei jedem Tastendruck erscheinen
-let datenTab = 'studio'; // 'studio' | 'jsonld'
+const DATEN_TABS = ['studio', 'jsonld', 'suche'];
+let datenTab = 'studio'; // 'studio' | 'jsonld' | 'suche'
 const datenTexte = { studio: '', jsonld: '' };
 
 /**
@@ -178,12 +180,14 @@ function baueLeiste() {
       <div class="tabs" role="tablist" aria-label="Datenformat">
         <button type="button" role="tab" id="tab-studio" data-tab="studio" aria-selected="true" aria-controls="daten-inhalt">Studio-JSON</button>
         <button type="button" role="tab" id="tab-jsonld" data-tab="jsonld" aria-selected="false" aria-controls="daten-inhalt" tabindex="-1">JSON-LD (schema.org)</button>
+        <button type="button" role="tab" id="tab-suche" data-tab="suche" aria-selected="false" aria-controls="daten-suche" tabindex="-1">So sieht die Suche dich</button>
       </div>
       <div class="daten-zeile">
         <span id="daten-datei"></span>
         <button type="button" class="panel-kopieren" id="daten-kopieren">Kopieren</button>
       </div>
       <pre class="daten-code" id="daten-inhalt" role="tabpanel" tabindex="0"></pre>
+      <div class="suche" id="daten-suche" role="tabpanel" aria-labelledby="tab-suche" tabindex="0" hidden></div>
     </aside>
     <aside class="panel panel-breit" id="panel-editor" aria-labelledby="panel-editor-titel" hidden>
       <div class="panel-kopf">
@@ -221,8 +225,18 @@ function waehleDatenTab(tab) {
     knopf.tabIndex = aktiv ? 0 : -1;
   }
   const { studio } = leseHash();
-  document.getElementById('daten-inhalt').setAttribute('aria-labelledby', `tab-${tab}`);
-  document.getElementById('daten-inhalt').textContent = datenTexte[tab];
+  const istSuche = tab === 'suche';
+  const code = document.getElementById('daten-inhalt');
+  const suche = document.getElementById('daten-suche');
+  code.hidden = istSuche;
+  suche.hidden = !istSuche;
+  panels.querySelector('.daten-zeile').hidden = istSuche;
+  if (istSuche) {
+    suche.innerHTML = sucheVorschauHtml(studio, simuliertesDatum, minutenJetzt());
+    return;
+  }
+  code.setAttribute('aria-labelledby', `tab-${tab}`);
+  code.textContent = datenTexte[tab];
   document.getElementById('daten-datei').textContent = tab === 'studio'
     ? `data/${studio.id}.json`
     : 'automatisch erzeugt, steht im <head>';
@@ -710,7 +724,8 @@ panels.addEventListener('click', async (ereignis) => {
 // Tabs per Pfeiltasten wechseln (Standardverhalten für Tab-Leisten)
 panels.addEventListener('keydown', (ereignis) => {
   if (!['ArrowLeft', 'ArrowRight'].includes(ereignis.key) || !ereignis.target.matches('[role="tab"]')) return;
-  const neu = datenTab === 'studio' ? 'jsonld' : 'studio';
+  const schritt = ereignis.key === 'ArrowRight' ? 1 : -1;
+  const neu = DATEN_TABS[(DATEN_TABS.indexOf(datenTab) + schritt + DATEN_TABS.length) % DATEN_TABS.length];
   waehleDatenTab(neu);
   panels.querySelector(`#tab-${neu}`).focus();
 });

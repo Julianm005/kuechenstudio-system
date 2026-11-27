@@ -96,10 +96,10 @@
     { "von": "2026-12-24", "bis": "2027-01-04", "grund": "Weihnachtspause" }
   ],
   "nachbarorte": [
-    { "name": "Radebeul", "slug": "radebeul", "km": 7 },
-    { "name": "Freital", "slug": "freital", "km": 9 },
-    { "name": "Heidenau", "slug": "heidenau", "km": 12 },
-    { "name": "Pirna", "slug": "pirna", "km": 17 }
+    { "name": "Radebeul", "slug": "radebeul", "km": 7, "text": "Von Radebeul sind Sie in rund 15 Minuten in unserem Atelier in Dresden. Lichtplanung und Aufmaß machen wir auf Wunsch bei Ihnen zu Hause." },
+    { "name": "Freital", "slug": "freital", "km": 9, "text": "Aus Freital erreichen Sie uns in etwa 20 Minuten. Bitte vereinbaren Sie vorab einen Termin, dann nehmen wir uns Zeit für Ihr Projekt." },
+    { "name": "Heidenau", "slug": "heidenau", "km": 12, "text": "Von Heidenau fahren Sie etwa 20 Minuten. Lieferung und Montage in Heidenau sind für uns Alltag." },
+    { "name": "Pirna", "slug": "pirna", "km": 17, "text": "Aus Pirna brauchen Sie rund 25 Minuten. Für Projekte im Elbtal planen wir regelmäßig vor Ort." }
   ],
   "faq": [
     {

@@ -606,3 +606,40 @@ body {
   .feld-blitz, .website .bereich-blitz { animation: none; }
   .website .bereich-blitz { outline: 3px solid rgba(138, 180, 248, 0.9); outline-offset: -3px; }
 }
+
+/* ---------- Such-Vorschau ---------- */
+
+.suche { display: flex; flex-direction: column; gap: 1rem; }
+.suche[hidden] { display: none; }
+.daten-zeile[hidden], .daten-code[hidden] { display: none; }
+
+.suche-hinweis { margin: 0; color: #b5b5b5; font-size: 13px; }
+
+.suche-treffer,
+.suche-karte {
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #202124;
+}
+
+.suche-treffer p, .suche-karte p { margin: 0; }
+.suche-url { color: #3c4043; font-size: 12px; }
+.suche-titel { margin: 0.15rem 0; color: #1a0dab; font-size: 18px; line-height: 1.3; }
+.suche-text { color: #3c4043; font-size: 13px; }
+
+.suche-name { font-size: 18px; font-weight: 700; }
+.suche-art { color: #5f6368; font-size: 13px; }
+.suche-status { margin-top: 0.5rem; font-weight: 600; }
+.suche-offen { color: #137333; }
+.suche-zu { color: #b3261e; }
+
+.suche-zeiten { width: 100%; margin-top: 0.6rem; border-collapse: collapse; font-size: 13px; }
+.suche-zeiten th { width: 8rem; font-weight: 600; text-align: left; vertical-align: top; }
+.suche-zeiten th, .suche-zeiten td { padding: 0.15rem 0; }
+.suche-pause { color: #b3261e; }
+.visuell-versteckt-demo { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+.suche-daten { display: grid; grid-template-columns: 8rem 1fr; gap: 0.2rem 0.5rem; margin: 0.7rem 0 0; font-size: 13px; }
+.suche-daten dt { font-weight: 600; }
+.suche-daten dd { margin: 0; }
