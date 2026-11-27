@@ -10,6 +10,9 @@ import { spurenHtml, tageImBereich } from './zeitstrahl.js';
 import { zeigeMeldungen } from './meldungen.js';
 import { erzeugeJsonLd, setzeJsonLd } from './jsonld.js';
 import { pruefe, STATUS_ZEICHEN } from './check.js';
+import {
+  editorHtml, wendeAn, aendereListe, benenneOrt, setzeTagGeoeffnet, bereichFuer,
+} from './editor.js';
 
 export const STUDIO_IDS = [
   'kuechenwerk-elbtal',
@@ -25,7 +28,9 @@ export const THEMES = {
 
 const ANSICHTEN = { desktop: 'Desktop', handy: 'Handy', alle: 'Alle Studios' };
 
-const studios = new Map();
+const studios = new Map(); // Arbeitskopien: der Editor verändert diese, die Dateien in data/ bleiben unberührt
+const originale = new Map(); // unveränderte Kopien zum Zurücksetzen
+const PANELS = ['check', 'daten', 'editor'];
 const buehne = document.getElementById('buehne');
 const website = document.getElementById('website');
 const einzelRahmen = document.getElementById('geraet-einzeln');
@@ -56,7 +61,10 @@ let simuliertesDatum = echtesHeute();
 let ansicht = 'desktop';
 let gerendertesDatum = simuliertesDatum; // Datum der zuletzt gezeigten Seite (für die Meldungen)
 let strahlTimer = null; // läuft der Zeitraffer?
-let offenesPanel = null; // 'check' | 'daten' | null
+let offenesPanel = null; // 'check' | 'daten' | 'editor' | null
+let editorStudioId = null; // für welches Studio ist das Editor-Formular gebaut?
+const letztePunkte = new Map(); // Studio → Punkte des letzten Qualitäts-Checks (für die Meldung „7/9 → 8/9“)
+const letzteMeldung = new Map(); // Bereich → Zeitpunkt, damit Meldungen nicht bei jedem Tastendruck erscheinen
 let datenTab = 'studio'; // 'studio' | 'jsonld'
 const datenTexte = { studio: '', jsonld: '' };
 
@@ -132,6 +140,9 @@ function baueLeiste() {
       <button type="button" class="leiste-knopf" id="wahl-daten" aria-expanded="false" aria-controls="panel-daten">
         Daten ansehen
       </button>
+      <button type="button" class="leiste-knopf" id="wahl-editor" aria-expanded="false" aria-controls="panel-editor">
+        Live-Editor
+      </button>
       <div class="leiste-strahl">
         <button type="button" class="leiste-knopf" id="strahl-play" aria-pressed="false">▶ Zeitraffer</button>
         <div class="strahl">
@@ -173,12 +184,26 @@ function baueLeiste() {
         <button type="button" class="panel-kopieren" id="daten-kopieren">Kopieren</button>
       </div>
       <pre class="daten-code" id="daten-inhalt" role="tabpanel" tabindex="0"></pre>
+    </aside>
+    <aside class="panel panel-breit" id="panel-editor" aria-labelledby="panel-editor-titel" hidden>
+      <div class="panel-kopf">
+        <h2 id="panel-editor-titel">Live-Editor</h2>
+        <button type="button" class="panel-zu" data-panel-zu="editor" aria-label="Editor schließen">×</button>
+      </div>
+      <p class="panel-unter">Ändere ein Feld und sieh sofort, was auf der Website, im Qualitäts-Check und in den
+        schema.org-Daten passiert. Nichts wird gespeichert, „Zurücksetzen“ stellt das Original wieder her.</p>
+      <div class="editor-aktionen">
+        <button type="button" class="panel-kopieren" id="editor-kopieren">JSON kopieren</button>
+        <button type="button" class="panel-kopieren" id="editor-download">JSON herunterladen</button>
+        <button type="button" class="panel-kopieren" id="editor-reset">Zurücksetzen</button>
+      </div>
+      <div id="editor-inhalt"></div>
     </aside>`;
 }
 
 function schaltePanel(name, offen) {
   const neu = offen ?? offenesPanel !== name;
-  for (const n of ['check', 'daten']) {
+  for (const n of PANELS) {
     const istOffen = neu && n === name;
     document.getElementById(`panel-${n}`).hidden = !istOffen;
     leiste.querySelector(`#wahl-${n}`).setAttribute('aria-expanded', String(istOffen));
@@ -225,6 +250,7 @@ async function kopiere(text) {
 function aktualisiereCheck(studio) {
   const { ergebnisse, punkte, gesamt, schlechtester } = pruefe(studio, simuliertesDatum);
   const badge = leiste.querySelector('#check-badge');
+  letztePunkte.set(studio.id, punkte);
   badge.textContent = `${punkte}/${gesamt}`;
   badge.className = `badge badge-${schlechtester}`;
   document.getElementById('panel-check-unter').textContent =
@@ -232,7 +258,11 @@ function aktualisiereCheck(studio) {
   document.getElementById('check-liste').innerHTML = ergebnisse.map((e) => `
     <li class="check check-${e.status}">
       <span class="check-zeichen" role="img" aria-label="${STATUS_ZEICHEN[e.status].name}">${STATUS_ZEICHEN[e.status].zeichen}</span>
-      <div><strong>${esc(e.titel)}</strong><p>${esc(e.text)}</p></div>
+      <div>
+        <strong>${esc(e.titel)}</strong><p>${esc(e.text)}</p>
+        ${e.ziel && (e.status === 'warnung' || e.status === 'fehler')
+          ? `<button type="button" class="check-beheben" data-ziel="${esc(e.ziel)}">Im Editor beheben</button>` : ''}
+      </div>
     </li>`).join('');
 }
 
@@ -242,7 +272,95 @@ function aktualisiereDaten(studio) {
   waehleDatenTab(datenTab);
 }
 
+// ---------- Live-Editor ----------
+
+function baueEditorInhalt(studio) {
+  editorStudioId = studio.id;
+  document.getElementById('editor-inhalt').innerHTML = editorHtml(studio);
+}
+
+/** Lässt die betroffenen Abschnitte der Website kurz aufblitzen. */
+function blitze(abschnitte, studio) {
+  for (const suffix of abschnitte) {
+    const el = document.getElementById(`${studio.id}-${suffix}`);
+    if (!el) continue;
+    el.classList.remove('bereich-blitz');
+    void el.offsetWidth; // Animation neu starten
+    el.classList.add('bereich-blitz');
+    setTimeout(() => el.classList.remove('bereich-blitz'), 1400);
+  }
+}
+
+/** Nach einer Änderung im Editor: Seite neu zeigen, Bereiche markieren, Meldung ausgeben. */
+function nachAenderung(pfad, studio) {
+  const vorher = letztePunkte.get(studio.id) ?? pruefe(studio, simuliertesDatum).punkte;
+  zeige('datum');
+  const bereich = bereichFuer(pfad);
+  blitze(bereich.abschnitte, studio);
+  const meldungen = [];
+  const jetzt = Date.now();
+  if (jetzt - (letzteMeldung.get(bereich.name) ?? 0) > 3000) {
+    meldungen.push({ icon: '✏️', text: `${bereich.name} geändert: Website, Qualitäts-Check und schema.org-Daten sind sofort aktuell.` });
+  }
+  letzteMeldung.set(bereich.name, jetzt);
+  const ergebnis = pruefe(studio, simuliertesDatum);
+  if (ergebnis.punkte !== vorher) {
+    meldungen.push({ icon: ergebnis.punkte > vorher ? '📈' : '📉', text: `Qualitäts-Check: ${vorher}/${ergebnis.gesamt} → ${ergebnis.punkte}/${ergebnis.gesamt}` });
+  }
+  zeigeMeldungen(meldungen);
+}
+
+function editorFeldGeaendert(el) {
+  const { studio } = leseHash();
+  const pfad = el.dataset.pfad;
+  let ergebnis;
+  if (/^nachbarorte\.\d+\.name$/.test(pfad)) {
+    benenneOrt(studio, Number(pfad.split('.')[1]), el.value);
+    ergebnis = { ok: true, meldung: '' };
+  } else {
+    ergebnis = wendeAn(studio, pfad, el.value);
+  }
+  const fehlerSchluessel = pfad.replace(/^(oeffnungszeiten\.\w+)\.0$/, '$1.1');
+  const fehlerFeld = panels.querySelector(`[data-fehler="${fehlerSchluessel}"]`);
+  if (fehlerFeld) fehlerFeld.textContent = ergebnis.meldung;
+  el.setAttribute('aria-invalid', String(!ergebnis.ok));
+  if (ergebnis.ok) nachAenderung(pfad, studio);
+}
+
+function editorKlick(knopf) {
+  const { studio } = leseHash();
+  const aktion = knopf.dataset.aktion;
+  const fokus = aendereListe(studio, aktion, simuliertesDatum);
+  baueEditorInhalt(studio);
+  const ziel = panels.querySelector(`[data-pfad="${fokus}"], [data-aktion="${fokus}"]`);
+  ziel?.focus();
+  nachAenderung(aktion.startsWith('aktion') ? 'aktionen' : aktion.startsWith('pause') ? 'schliesstage' : 'nachbarorte', studio);
+}
+
+function springeZumFeld(ziel) {
+  schaltePanel('editor', true);
+  const el = panels.querySelector(`[data-pfad="${CSS.escape(ziel)}"], [data-aktion="${CSS.escape(ziel)}"]`);
+  if (!el) return;
+  el.scrollIntoView({ block: 'center' });
+  el.focus();
+  const markiert = el.closest('.editor-feld') ?? el;
+  markiert.classList.add('feld-blitz');
+  setTimeout(() => markiert.classList.remove('feld-blitz'), 1800);
+}
+
+function herunterladen(text, dateiname) {
+  const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = dateiname;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 function zeigeInLeiste({ studio, theme }) {
+  if (editorStudioId !== studio.id) baueEditorInhalt(studio);
   aktualisiereCheck(studio);
   aktualisiereDaten(studio);
   const wahlStudio = leiste.querySelector('#wahl-studio');
@@ -519,13 +637,61 @@ leiste.addEventListener('click', (ereignis) => {
     schaltePanel('check');
   } else if (ereignis.target.closest('#wahl-daten')) {
     schaltePanel('daten');
+  } else if (ereignis.target.closest('#wahl-editor')) {
+    schaltePanel('editor');
   }
+});
+
+// Editor: Eingaben, Haken und Knöpfe
+panels.addEventListener('input', (ereignis) => {
+  const el = ereignis.target;
+  if (el.closest('#editor-inhalt') && el.dataset.pfad) editorFeldGeaendert(el);
+});
+
+panels.addEventListener('change', (ereignis) => {
+  const el = ereignis.target;
+  if (!el.closest('#editor-inhalt') || !el.dataset.tag) return;
+  const { studio } = leseHash();
+  setzeTagGeoeffnet(studio, el.dataset.tag, el.checked);
+  baueEditorInhalt(studio);
+  panels.querySelector(`[data-tag="${el.dataset.tag}"]`)?.focus();
+  nachAenderung('oeffnungszeiten', studio);
 });
 
 panels.addEventListener('click', async (ereignis) => {
   const zu = ereignis.target.closest('[data-panel-zu]');
   if (zu) {
     schaltePanel(zu.dataset.panelZu, false);
+    return;
+  }
+  const beheben = ereignis.target.closest('.check-beheben');
+  if (beheben) {
+    springeZumFeld(beheben.dataset.ziel);
+    return;
+  }
+  const editorKnopf = ereignis.target.closest('#editor-inhalt [data-aktion]');
+  if (editorKnopf) {
+    editorKlick(editorKnopf);
+    return;
+  }
+  const { studio: aktuell } = leseHash();
+  if (ereignis.target.closest('#editor-kopieren')) {
+    const knopf = ereignis.target.closest('#editor-kopieren');
+    const ok = await kopiere(JSON.stringify(aktuell, null, 2));
+    knopf.textContent = ok ? 'Kopiert ✓' : 'Nicht möglich';
+    setTimeout(() => { knopf.textContent = 'JSON kopieren'; }, 1800);
+    return;
+  }
+  if (ereignis.target.closest('#editor-download')) {
+    herunterladen(JSON.stringify(aktuell, null, 2), `${aktuell.id}.json`);
+    return;
+  }
+  if (ereignis.target.closest('#editor-reset')) {
+    studios.set(aktuell.id, structuredClone(originale.get(aktuell.id)));
+    const frisch = studios.get(aktuell.id);
+    baueEditorInhalt(frisch);
+    zeige('datum');
+    zeigeMeldungen([{ icon: '↩️', text: `${frisch.name}: Originaldaten wiederhergestellt.` }]);
     return;
   }
   const tab = ereignis.target.closest('[data-tab]');
@@ -580,6 +746,7 @@ buehne.addEventListener('click', (ereignis) => {
 async function start() {
   for (const studio of await Promise.all(STUDIO_IDS.map(ladeStudio))) {
     studios.set(studio.id, studio);
+    originale.set(studio.id, structuredClone(studio));
   }
   baueLeiste();
   window.addEventListener('hashchange', () => zeige());

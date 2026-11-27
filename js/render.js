@@ -256,7 +256,7 @@ function faq(studio) {
 
 function nachbarorte(studio, theme, aktuell) {
   return `
-  <section class="orte" aria-labelledby="${idp}orte-titel">
+  <section class="orte" id="${idp}orte" aria-labelledby="${idp}orte-titel">
     <div class="inhalt">
       <h2 id="${idp}orte-titel" class="orte-titel">Wir planen auch für Kunden aus</h2>
       <ul class="orte-liste">

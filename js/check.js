@@ -17,17 +17,19 @@ const WERBEWOERTER = /aktion|angebot|neuheiten|messe|rabatt/i;
 // Felder, in denen Jahreszahlen normal sind
 const JAHR_IGNORIEREN = new Set(['seit', 'gueltigAb', 'gueltigBis', 'von', 'bis']);
 
-function ergebnis(id, titel, status, text) {
-  return { id, titel, status, text };
+/** ziel: Feld im Live-Editor, an dem sich das Problem beheben lässt (oder null). */
+function ergebnis(id, titel, status, text, ziel = null) {
+  return { id, titel, status, text, ziel };
 }
 
-/** Alle Texte im JSON (rekursiv), außer in den ignorierten Feldern. */
-function* alleTexte(wert, schluessel) {
+/** Alle Texte im JSON (rekursiv) mit ihrem Pfad, außer in den ignorierten Feldern. */
+function* alleTexte(wert, schluessel, pfad = '') {
   if (JAHR_IGNORIEREN.has(schluessel)) return;
-  if (typeof wert === 'string') yield wert;
-  else if (Array.isArray(wert)) for (const w of wert) yield* alleTexte(w, schluessel);
-  else if (wert && typeof wert === 'object') {
-    for (const [k, w] of Object.entries(wert)) yield* alleTexte(w, k);
+  if (typeof wert === 'string') yield { text: wert, pfad };
+  else if (Array.isArray(wert)) {
+    for (const [i, w] of wert.entries()) yield* alleTexte(w, schluessel, pfad ? `${pfad}.${i}` : String(i));
+  } else if (wert && typeof wert === 'object') {
+    for (const [k, w] of Object.entries(wert)) yield* alleTexte(w, k, pfad ? `${pfad}.${k}` : k);
   }
 }
 
@@ -35,15 +37,15 @@ function pruefeOrtImTitel(studio) {
   const titel = 'Ort steht im Seitentitel';
   return studio.seo.titel.includes(studio.kontakt.ort)
     ? ergebnis('titel', titel, 'ok', `„${studio.seo.titel}“ nennt ${studio.kontakt.ort}. Bei Google zählt der Ort im Titel für die lokale Suche.`)
-    : ergebnis('titel', titel, 'warnung', `Der Titel „${studio.seo.titel}“ nennt ${studio.kontakt.ort} nicht. 54 % der Küchenstudios verschenken so lokale Treffer.`);
+    : ergebnis('titel', titel, 'warnung', `Der Titel „${studio.seo.titel}“ nennt ${studio.kontakt.ort} nicht. 54 % der Küchenstudios verschenken so lokale Treffer.`, 'seo.titel');
 }
 
 function pruefeNachbarorte(studio) {
   const titel = 'Mindestens 3 Seiten für Nachbarorte';
   const n = studio.nachbarorte.length;
   if (n >= 3) return ergebnis('orte', titel, 'ok', `${n} Ortsseiten werden automatisch erzeugt, zum Beispiel für ${studio.nachbarorte[0].name}.`);
-  if (n > 0) return ergebnis('orte', titel, 'warnung', `Nur ${n} Nachbarort${n === 1 ? '' : 'e'} hinterlegt. Mit mindestens 3 Ortsseiten wird das Studio in der Umgebung besser gefunden.`);
-  return ergebnis('orte', titel, 'fehler', 'Keine Nachbarorte hinterlegt: Es gibt keine einzige Ortsseite für die lokale Suche.');
+  if (n > 0) return ergebnis('orte', titel, 'warnung', `Nur ${n} Nachbarort${n === 1 ? '' : 'e'} hinterlegt. Mit mindestens 3 Ortsseiten wird das Studio in der Umgebung besser gefunden.`, 'ort-neu');
+  return ergebnis('orte', titel, 'fehler', 'Keine Nachbarorte hinterlegt: Es gibt keine einzige Ortsseite für die lokale Suche.', 'ort-neu');
 }
 
 function pruefeAbgelaufeneAktionen(studio, datum) {
@@ -61,22 +63,23 @@ function pruefeJahreszahlen(studio, datum) {
   const titel = 'Keine veralteten Jahreszahlen';
   const jahr = datum.getFullYear();
   const treffer = [];
-  for (const text of alleTexte(studio)) {
+  for (const { text, pfad } of alleTexte(studio)) {
     if (!WERBEWOERTER.test(text)) continue;
     const alt = [...text.matchAll(/\b(19|20)\d\d\b/g)].map((m) => Number(m[0])).find((j) => j < jahr);
-    if (alt) treffer.push({ text, jahr: alt });
+    if (alt) treffer.push({ text, jahr: alt, pfad });
   }
   if (!treffer.length) return ergebnis('jahre', titel, 'ok', `Keine Aktions- oder Angebotstexte mit einer Jahreszahl vor ${jahr}.`);
   const t = treffer[0];
   const mehr = treffer.length > 1 ? ` (und ${treffer.length - 1} weitere)` : '';
-  return ergebnis('jahre', titel, 'warnung', `„${t.text}“ nennt ${t.jahr}, aber es ist ${jahr}${mehr}. Veraltete Jahreszahlen wirken wie eine vergessene Website.`);
+  return ergebnis('jahre', titel, 'warnung', `„${t.text}“ nennt ${t.jahr}, aber es ist ${jahr}${mehr}. Veraltete Jahreszahlen wirken wie eine vergessene Website.`, t.pfad);
 }
 
 function pruefeAltTexte(studio) {
   const titel = 'Alle Küchenbilder haben Alt-Texte';
   const fehlen = studio.kuechen.filter((k) => !k.alt || !k.alt.trim());
+  const ersteFehlende = studio.kuechen.findIndex((k) => !k.alt || !k.alt.trim());
   return fehlen.length
-    ? ergebnis('alt', titel, 'fehler', `${fehlen.length} von ${studio.kuechen.length} Küchenbildern ohne Alt-Text (zum Beispiel „${fehlen[0].titel}“).`)
+    ? ergebnis('alt', titel, 'fehler', `${fehlen.length} von ${studio.kuechen.length} Küchenbildern ohne Alt-Text (zum Beispiel „${fehlen[0].titel}“).`, `kuechen.${ersteFehlende}.alt`)
     : ergebnis('alt', titel, 'ok', `Alle ${studio.kuechen.length} Küchenbilder sind für Screenreader beschrieben.`);
 }
 
@@ -92,7 +95,7 @@ function pruefeOeffnungszeiten(studio) {
 function pruefeSchliesstage(studio, jsonLd) {
   const titel = 'Schließtage hinterlegt und an Google übergeben';
   const n = studio.schliesstage.length;
-  if (!n) return ergebnis('schliess', titel, 'warnung', 'Keine Schließtage hinterlegt. Google zeigt dann an Feiertagen und in den Betriebsferien falsche Öffnungszeiten.');
+  if (!n) return ergebnis('schliess', titel, 'warnung', 'Keine Schließtage hinterlegt. Google zeigt dann an Feiertagen und in den Betriebsferien falsche Öffnungszeiten.', 'pause-neu');
   const uebergeben = jsonLd?.specialOpeningHoursSpecification?.length ?? 0;
   return uebergeben === n
     ? ergebnis('schliess', titel, 'ok', `${n} Schließzeitraum${n === 1 ? '' : 'e'} hinterlegt und als strukturierte Daten übergeben.`)
@@ -113,7 +116,7 @@ function pruefeKontakt(studio) {
   const telefonOk = k.telefon.replace(/\D/g, '').length >= 6;
   const mailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(k.email);
   if (telefonOk && mailOk) return ergebnis('kontakt', titel, 'ok', 'Telefon (tel:) und E-Mail (mailto:) sind als Links hinterlegt, auf dem Handy reicht ein Tipp.');
-  return ergebnis('kontakt', titel, 'fehler', `${!telefonOk ? 'Die Telefonnummer ist unvollständig. ' : ''}${!mailOk ? 'Die E-Mail-Adresse ist ungültig.' : ''}`.trim());
+  return ergebnis('kontakt', titel, 'fehler', `${!telefonOk ? 'Die Telefonnummer ist unvollständig. ' : ''}${!mailOk ? 'Die E-Mail-Adresse ist ungültig.' : ''}`.trim(), telefonOk ? 'kontakt.email' : 'kontakt.telefon');
 }
 
 /**
