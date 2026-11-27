@@ -32,11 +32,14 @@
   margin: 0 0 0.6em;
 }
 
-.website h1,
-.website h2,
-.website h3 {
-  overflow-wrap: anywhere;
+/* Silbentrennung: <html lang="de"> plus hyphens: auto. Es gibt bewusst kein overflow-wrap: anywhere,
+   das Wörter ohne Trennstrich zerreißt. Fehlt dem Browser das Trennwörterbuch, verkleinert js/passend.js
+   die Überschrift, bis das längste Wort passt. */
+.website {
   hyphens: auto;
+  -webkit-hyphens: auto;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 /* Grid-Kinder dürfen schmaler werden als ihr längstes Wort (sonst läuft die Seite über) */
@@ -46,8 +49,8 @@
   min-width: 0;
 }
 
-.website h1 { font-size: clamp(1.9rem, 6cqi, 3rem); }
-.website h2 { font-size: clamp(1.45rem, 4.5cqi, 2.1rem); }
+.website h1 { font-size: clamp(1.6rem, 5.4cqi, 3rem); }
+.website h2 { font-size: clamp(1.35rem, 4.2cqi, 2.1rem); }
 .website h3 { font-size: 1.15rem; margin-bottom: 0.4em; }
 .website p { margin: 0 0 1em; }
 

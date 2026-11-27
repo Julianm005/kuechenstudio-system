@@ -10,6 +10,7 @@ import { spurenHtml, tageImBereich } from './zeitstrahl.js';
 import { zeigeMeldungen } from './meldungen.js';
 import { sucheVorschauHtml } from './suche.js';
 import { kuechenSVG } from './kitchen-art.js';
+import { passeUeberschriftenAn, beobachteBreite } from './passend.js';
 import { terminAuswahl, langesDatum } from './termin.js';
 import { erzeugeJsonLd, setzeJsonLd } from './jsonld.js';
 import { pruefe, STATUS_ZEICHEN } from './check.js';
@@ -577,6 +578,10 @@ function rendern({ studio, theme, ort: gewaehlterOrt }) {
     document.querySelector('meta[name="description"]')?.setAttribute('content', beschreibung);
   }
   setzeJsonLd(erzeugeJsonLd(studio));
+  for (const w of wurzeln()) {
+    passeUeberschriftenAn(w);
+    beobachteBreite(w);
+  }
 
   const seite = `${ansicht}/${studio.id}/${ort?.slug ?? ''}`;
   if (letzteSeite && letzteSeite !== seite) {
