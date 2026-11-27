@@ -6,8 +6,9 @@ Reines HTML, CSS und Vanilla JavaScript. Kein Framework, kein Build-Schritt, kei
 
 > **Alle Studios, Namen, Adressen, Telefonnummern und E-Mail-Adressen sind erfunden.** Herstellernamen stehen nur als Text, ohne Logos.
 
-<!-- TODO vor der Veröffentlichung ergänzen:
-     - Link zur Live-Demo (GitHub Pages)
+**Live-Demo: https://julianm005.github.io/kuechenstudio-system/**
+
+<!-- TODO ergänzen:
      - GIF vom Datums-Simulator (Datum vorspulen: Aktion verschwindet, Badge wechselt auf „Heute geschlossen“)
      - Screenshots (Desktop, Handy, Alle Studios, Qualitäts-Check)
      - Lighthouse-Screenshot, sobald gemessen -->
@@ -95,7 +96,15 @@ js/check.js           Qualitäts-Check
 
 - Semantisches HTML, Alt-Texte für alle Küchenbilder, Tastaturbedienung, sichtbare Fokusrahmen, `prefers-reduced-motion` wird respektiert.
 - Kontraste der Website wurden für alle 3 × 3 Studio-Design-Kombinationen per Skript geprüft (mindestens AA).
-- Lighthouse: **noch nicht gemessen.** Ziel ist 95+ in allen Kategorien. <!-- TODO: Werte und Screenshot eintragen -->
+- Lighthouse (gemessen mit PageSpeed Insights auf der Live-Seite, 27.11.2026, Lighthouse 13.6):
+
+  | | Performance | Accessibility | Best Practices | SEO |
+  |---|---|---|---|---|
+  | Mobil | 100 | 100 | 100 | 100 |
+  | Desktop | 100 | 100 | 100 | 100 |
+
+  <!-- TODO: Lighthouse-Screenshot ergänzen -->
+- Bei der ersten Messung lag der Desktop-Wert bei 97, weil die per Skript eingefügte Demo-Leiste die Seite verschob (Layout-Versatz 0,101). Der Hinweis liegt jetzt als Overlay über der Seite und die Leiste reserviert ihre Höhe: 0,025.
 
 ## Wie das Projekt entstanden ist
 
