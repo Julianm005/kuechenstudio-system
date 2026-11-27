@@ -326,7 +326,8 @@ body {
 
 .ansicht-handy .website,
 .ansicht-alle .website {
-  height: min(800px, calc(100vh - 9rem));
+  /* Rahmenhöhe aus dem sichtbaren Bereich unter der Leiste: Die Schnellleiste am Rahmenende bleibt im Bild */
+  height: clamp(520px, calc(100vh - var(--leiste-hoehe, 6rem) - 4.5rem), 800px);
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -347,6 +348,14 @@ body {
 }
 
 #alle-studios[hidden] { display: none; }
+
+/* „Alle Studios“: js/app.js berechnet --alle-zoom, damit alle Handys nebeneinander auf den Bildschirm passen.
+   Die Höhe wird durch den Faktor geteilt, weil zoom auch die Höhe mit verkleinert. */
+.ansicht-alle .spalte { zoom: var(--alle-zoom, 1); }
+
+.ansicht-alle .website {
+  height: clamp(480px, calc((100vh - var(--leiste-hoehe, 6rem) - 7rem) / var(--alle-zoom, 1)), 800px);
+}
 
 .spalte { margin: 0; }
 

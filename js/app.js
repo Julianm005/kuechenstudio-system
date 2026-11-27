@@ -566,6 +566,7 @@ function rendern({ studio, theme, ort: gewaehlterOrt }) {
         <figcaption>${esc(s.name)} · ${THEMES[s.theme]}</figcaption>
       </figure>`;
     }).join('');
+    setzeAlleZoom();
     website.innerHTML = ''; // sonst gäbe es dieselben IDs doppelt
     document.title = 'Alle Studios | Küchenstudio-Website-System';
   } else {
@@ -913,6 +914,17 @@ buehne.addEventListener('click', (ereignis) => {
   if (ereignis.target.closest('[data-termin-neu]')) zeige('datum');
 });
 
+/** Faktor, mit dem alle Handy-Rahmen nebeneinander auf die Fensterbreite passen. Bei schmalen Fenstern
+ *  (Faktor unter 0,65) bleibt es bei voller Größe, die Rahmen stehen dann untereinander. */
+function setzeAlleZoom() {
+  const anzahl = studios.size;
+  // Platz für die Rahmen = Fensterbreite ohne Scrollleiste, Seitenränder und die Abstände zwischen den
+  // Rahmen (die nicht mitverkleinert werden); ein Rahmen ist 414 px breit (siehe demo.css)
+  const platz = document.documentElement.clientWidth - 32 - (anzahl - 1) * 40;
+  const faktor = Math.min(1, platz / (anzahl * 414));
+  alleStudios.style.setProperty('--alle-zoom', faktor >= 0.65 ? faktor.toFixed(3) : '1');
+}
+
 /** Misst die Demo-Leiste und legt ihre Höhe als --leiste-hoehe ab (für Anker-Sprünge und Rahmenhöhen). */
 function misseLeistenhoehe() {
   document.documentElement.style.setProperty('--leiste-hoehe', `${Math.round(leiste.getBoundingClientRect().height)}px`);
@@ -922,7 +934,10 @@ function misseLeistenhoehe() {
 // und an den Stellen gemessen, die die Höhe selbst ändern (Hinweis, Menü), das ist zuverlässiger.
 function beobachteLeistenhoehe() {
   misseLeistenhoehe();
-  window.addEventListener('resize', misseLeistenhoehe);
+  window.addEventListener('resize', () => {
+    misseLeistenhoehe();
+    if (ansicht === 'alle') setzeAlleZoom();
+  });
   if (typeof ResizeObserver !== 'undefined') new ResizeObserver(misseLeistenhoehe).observe(leiste);
 }
 
