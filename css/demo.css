@@ -35,14 +35,9 @@ body {
 .leiste-felder { display: contents; }
 .leiste-knopf.leiste-menue { display: none; margin-left: auto; }
 
-/* Der Hinweis liegt über der Seite statt sie nach unten zu schieben (verhindert Layout-Versatz) */
+/* Der Hinweis gehört zur Demo-Leiste: Er schiebt die Website nach unten, statt sie zu überdecken.
+   Nach „Verstanden“ ist er `hidden` (display: none) und nimmt keinen Platz mehr ein. */
 .leiste-hinweis {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 1;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
   display: flex;
   align-items: center;
   justify-content: space-between;
