@@ -123,11 +123,25 @@ js/check.js           Qualitäts-Check
   <!-- TODO: Lighthouse-Screenshot ergänzen -->
 - Bei der ersten Messung lag der Desktop-Wert bei 97, weil die per Skript eingefügte Demo-Leiste die Seite verschob (Layout-Versatz 0,101). Der Hinweis liegt jetzt als Overlay über der Seite und die Leiste reserviert ihre Höhe: 0,025.
 
-## Wie das Projekt entstanden ist
+## Wie dieses Projekt entstanden ist
 
-<!-- TODO: ehrlicher Hinweis, dass das Projekt mit Claude Code gebaut wurde, und welche Entscheidungen
-     ich selbst getroffen habe (Konzept, Marktstudie, Datenmodell, Auswahl der Probleme, ...).
-     Das kann nur die Person schreiben, die sie getroffen hat. -->
+Ich habe dieses Projekt mit **Claude Code** gebaut. Dabei hat die KI den größten Teil des Codes geschrieben, die Richtung und die Qualitätskontrolle kamen von mir.
+
+**1. Recherche und Konzept**
+Ausgangspunkt war die Frage, woran Websites von Küchenstudios typischerweise scheitern: Aktionen laufen ab und bleiben online, Öffnungszeiten und Schließtage sind veraltet, der eigene Ort fehlt im Seitentitel, Nachbarorte werden nicht abgedeckt, viele Seiten sind auf dem Handy schwach. Daraus habe ich mit Unterstützung von Claude eine Projektbeschreibung mit Datenmodell, Funktionen und Akzeptanzkriterien erarbeitet.
+
+**2. Schrittweiser Aufbau**
+Claude Code hat das Projekt nicht in einem Durchgang erzeugt. Ich habe es in einzelnen Schritten bauen lassen: erst ein Studio in einem Design, dann die weiteren Designs, die Küchen-Grafiken, das Ablaufdatum für Aktionen, die Ortsseiten, die Google-Daten und den Qualitäts-Check. Bei größeren Schritten habe ich mir vorher einen Plan zeigen lassen und erst danach die Umsetzung freigegeben.
+
+**3. Testen und Fehler finden**
+Nach jedem Schritt habe ich die Seite selbst im Browser geprüft, auf dem Desktop und in der Handy-Ansicht, in verschiedenen Kombinationen aus Studio und Design. Fehler wie falsche Umbrüche, überlappende Elemente oder Logikfehler bei Öffnungszeiten habe ich gesucht, beschrieben (oft mit Screenshot) und gezielt beheben lassen. Seit den Erweiterungen (Zeitstrahl, Editor usw.) ist jeder Stand als eigener Git-Commit gespeichert.
+
+**4. Was ich dabei gelernt habe**
+- Gute Ergebnisse mit KI entstehen durch klare Anforderungen, kleine Schritte und konsequentes Prüfen, nicht durch einen einzelnen Prompt.
+- Inhalt und Gestaltung zu trennen (JSON + Design-Layer) macht ein System skalierbar: Ein neues Studio ist nur eine neue Datei.
+- Die KI liegt öfter knapp daneben, besonders bei Layout-Details und Sonderfällen. Das zu erkennen und präzise zu beschreiben, ist der wichtigste Teil der Arbeit.
+
+> Alle Studios, Personen, Adressen und Telefonnummern in diesem Projekt sind frei erfunden.
 
 ## Nicht Teil dieses Projekts
 
