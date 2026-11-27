@@ -27,8 +27,8 @@ body {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem 1.25rem;
-  padding: 0.5rem 1rem;
+  gap: 0.4rem 0.5rem;
+  padding: 0.5rem 0.75rem;
 }
 
 /* Felder liegen direkt in der Leiste (Desktop); auf dem Handy klappen sie hinter „Steuerung“ zusammen */
@@ -643,3 +643,77 @@ body {
 .suche-daten { display: grid; grid-template-columns: 8rem 1fr; gap: 0.2rem 0.5rem; margin: 0.7rem 0 0; font-size: 13px; }
 .suche-daten dt { font-weight: 600; }
 .suche-daten dd { margin: 0; }
+
+/* ---------- Typische Website, Konfigurator, Neues Studio ---------- */
+
+.website .demo-warnung {
+  display: inline-block;
+  margin: 0.4rem 0 0;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid #e5736a;
+  border-radius: 4px;
+  background: #fdecea;
+  color: #8c1d18;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.website .typisch-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  padding: 0.8rem 1rem;
+  background: #fff4cf;
+  border-bottom: 2px solid #e0b100;
+  color: #4a3a00;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 0.95rem;
+}
+
+.website .typisch-banner p { margin: 0; }
+
+.website .konfig {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.website .konfig-titel { font-weight: 600; }
+.website .konfig label { display: inline-flex; align-items: center; gap: 0.4rem; }
+.website .konfig input[type="color"] { width: 2.75rem; height: 2.5rem; padding: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); cursor: pointer; }
+
+.neu-formular { display: flex; flex-direction: column; gap: 0.25rem; }
+.neu-formular .editor-feld input,
+.neu-formular .editor-feld select {
+  min-height: 1.9rem;
+  padding: 0.2rem 0.45rem;
+  border: 1px solid #666;
+  border-radius: 4px;
+  background: #3a3a3a;
+  color: #f2f2f2;
+  font: inherit;
+  color-scheme: dark;
+}
+.neu-formular input[type="color"] { width: 3rem; padding: 0; }
+.neu-formular .editor-knopf { align-self: flex-start; margin-top: 0.5rem; }
+
+.leiste-knopf[aria-pressed="true"] { background: #e8e8e8; color: #202020; font-weight: 600; }
+
+/* Kompakte Leiste: Auswahlfelder nicht breiter als nötig, damit sie auf einer Zeile Platz finden */
+#wahl-studio { max-width: 11.5rem; text-overflow: ellipsis; }
+#wahl-theme { max-width: 7rem; }
+.ansicht-knoepfe button { padding-inline: 0.55rem; }
+.ansicht-wahl legend { margin-right: 0.35rem; }
+
+/* Auf breiten Bildschirmen die Höhe der gefüllten Leiste vorab reservieren (kein Layout-Versatz beim Laden) */
+@media (min-width: 1100px) {
+  #demo-leiste { min-height: 5.8rem; }
+}

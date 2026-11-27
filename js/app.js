@@ -9,11 +9,12 @@ import {
 import { spurenHtml, tageImBereich } from './zeitstrahl.js';
 import { zeigeMeldungen } from './meldungen.js';
 import { sucheVorschauHtml } from './suche.js';
+import { kuechenSVG } from './kitchen-art.js';
 import { terminAuswahl, langesDatum } from './termin.js';
 import { erzeugeJsonLd, setzeJsonLd } from './jsonld.js';
 import { pruefe, STATUS_ZEICHEN } from './check.js';
 import {
-  editorHtml, wendeAn, aendereListe, benenneOrt, setzeTagGeoeffnet, bereichFuer,
+  editorHtml, wendeAn, aendereListe, benenneOrt, setzeTagGeoeffnet, bereichFuer, slugFuer,
 } from './editor.js';
 
 export const STUDIO_IDS = [
@@ -32,7 +33,7 @@ const ANSICHTEN = { desktop: 'Desktop', handy: 'Handy', alle: 'Alle Studios' };
 
 const studios = new Map(); // Arbeitskopien: der Editor verändert diese, die Dateien in data/ bleiben unberührt
 const originale = new Map(); // unveränderte Kopien zum Zurücksetzen
-const PANELS = ['check', 'daten', 'editor'];
+const PANELS = ['check', 'daten', 'editor', 'neu'];
 const buehne = document.getElementById('buehne');
 const website = document.getElementById('website');
 const einzelRahmen = document.getElementById('geraet-einzeln');
@@ -61,9 +62,10 @@ function minutenJetzt() {
 // Simuliertes Datum: bestimmt Aktionen, Öffnungsstatus und Schließtage. Die Uhrzeit bleibt echt.
 let simuliertesDatum = echtesHeute();
 let ansicht = 'desktop';
+let typisch = false; // Ansicht „Typische Website“: dieselben Daten ohne Selbstpflege
 let gerendertesDatum = simuliertesDatum; // Datum der zuletzt gezeigten Seite (für die Meldungen)
 let strahlTimer = null; // läuft der Zeitraffer?
-let offenesPanel = null; // 'check' | 'daten' | 'editor' | null
+let offenesPanel = null; // 'check' | 'daten' | 'editor' | 'neu' | null
 let editorStudioId = null; // für welches Studio ist das Editor-Formular gebaut?
 const letztePunkte = new Map(); // Studio → Punkte des letzten Qualitäts-Checks (für die Meldung „7/9 → 8/9“)
 const letzteMeldung = new Map(); // Bereich → Zeitpunkt, damit Meldungen nicht bei jedem Tastendruck erscheinen
@@ -111,6 +113,10 @@ function merkeHinweisGesehen() {
   }
 }
 
+function studioOptionen() {
+  return [...studios.values()].map((st) => `<option value="${esc(st.id)}">${esc(st.name)}</option>`).join('');
+}
+
 function baueLeiste() {
   const optionen = (eintraege) => eintraege
     .map(([wert, text]) => `<option value="${esc(wert)}">${esc(text)}</option>`).join('');
@@ -120,13 +126,13 @@ function baueLeiste() {
       <button type="button" class="leiste-knopf leiste-menue" id="leiste-menue" aria-expanded="false" aria-controls="leiste-felder">Steuerung</button>
       <div class="leiste-felder" id="leiste-felder" role="group" aria-label="Demo-Steuerung">
       <label class="leiste-feld">Studio
-        <select id="wahl-studio">${optionen([...studios.values()].map((s) => [s.id, s.name]))}</select>
+        <select id="wahl-studio">${studioOptionen()}</select>
       </label>
       <label class="leiste-feld">Design
         <select id="wahl-theme">${optionen(Object.entries(THEMES))}</select>
       </label>
       <span class="leiste-feld">
-        <label class="leiste-feld" for="wahl-datum">Datum simulieren</label>
+        <label class="leiste-feld" for="wahl-datum" title="Datum simulieren">Datum</label>
         <input type="date" id="wahl-datum" required>
         <button type="button" id="wahl-heute">Heute</button>
       </span>
@@ -137,14 +143,18 @@ function baueLeiste() {
             `<button type="button" data-ansicht="${schluessel}" aria-pressed="false">${text}</button>`).join('')}
         </span>
       </fieldset>
+      <button type="button" class="leiste-knopf" id="wahl-typisch" aria-pressed="false">Typische Website</button>
       <button type="button" class="leiste-knopf" id="wahl-check" aria-expanded="false" aria-controls="panel-check">
-        Qualitäts-Check <span class="badge" id="check-badge"></span>
+        <span title="Qualitäts-Check">Check</span> <span class="badge" id="check-badge"></span>
       </button>
       <button type="button" class="leiste-knopf" id="wahl-daten" aria-expanded="false" aria-controls="panel-daten">
-        Daten ansehen
+        Daten
       </button>
       <button type="button" class="leiste-knopf" id="wahl-editor" aria-expanded="false" aria-controls="panel-editor">
-        Live-Editor
+        Editor
+      </button>
+      <button type="button" class="leiste-knopf" id="wahl-neu" aria-expanded="false" aria-controls="panel-neu">
+        + Studio
       </button>
       <div class="leiste-strahl">
         <button type="button" class="leiste-knopf" id="strahl-play" aria-pressed="false">▶ Zeitraffer</button>
@@ -203,6 +213,22 @@ function baueLeiste() {
         <button type="button" class="panel-kopieren" id="editor-reset">Zurücksetzen</button>
       </div>
       <div id="editor-inhalt"></div>
+    </aside>
+    <aside class="panel" id="panel-neu" aria-labelledby="panel-neu-titel" hidden>
+      <div class="panel-kopf">
+        <h2 id="panel-neu-titel">Neues Studio</h2>
+        <button type="button" class="panel-zu" data-panel-zu="neu" aria-label="Schließen">×</button>
+      </div>
+      <p class="panel-unter">Ein neuer Kunde ist nur eine neue JSON-Datei. Hier entsteht sie aus einer Vorlage in
+        Sekunden. Der Qualitäts-Check zeigt danach, was noch fehlt, und der Live-Editor baut es aus.</p>
+      <form id="neu-formular" class="neu-formular">
+        <label class="editor-feld"><span>Name des Studios</span><input type="text" name="name" required placeholder="z. B. Küchen am Markt" autocomplete="off"></label>
+        <label class="editor-feld"><span>Ort</span><input type="text" name="ort" required placeholder="z. B. Pirna" autocomplete="off"></label>
+        <label class="editor-feld"><span>Design</span>
+          <select name="theme">${Object.entries(THEMES).map(([wert, text]) => `<option value="${wert}">${text}</option>`).join('')}</select></label>
+        <label class="editor-feld editor-farbe"><span>Akzentfarbe</span><input type="color" name="akzent" value="#4f7a63"></label>
+        <button type="submit" class="editor-knopf">Studio erzeugen</button>
+      </form>
     </aside>`;
 }
 
@@ -391,6 +417,7 @@ function zeigeInLeiste({ studio, theme }) {
   for (const knopf of leiste.querySelectorAll('[data-ansicht]')) {
     knopf.setAttribute('aria-pressed', String(knopf.dataset.ansicht === ansicht));
   }
+  leiste.querySelector('#wahl-typisch').setAttribute('aria-pressed', String(typisch));
   aktualisiereStrahl(studio);
 }
 
@@ -517,8 +544,9 @@ function animiere(vorher) {
   });
 }
 
-function rendern({ studio, theme, ort }) {
-  const optionen = { heute: simuliertesDatum, minuten: minutenJetzt() };
+function rendern({ studio, theme, ort: gewaehlterOrt }) {
+  const ort = typisch ? null : gewaehlterOrt; // eine typische Website hat keine Ortsseiten
+  const optionen = { heute: simuliertesDatum, minuten: minutenJetzt(), typisch };
   buehne.className = `ansicht-${ansicht}`;
   einzelRahmen.hidden = ansicht === 'alle';
   alleStudios.hidden = ansicht !== 'alle';
@@ -542,7 +570,7 @@ function rendern({ studio, theme, ort }) {
     alleStudios.innerHTML = '';
     setzeAttribute(website, studio, theme);
     website.innerHTML = renderSeite(studio, { ...optionen, theme, ort });
-    document.title = ort ? `Küchenstudio für ${ort.name} | ${studio.name}` : studio.seo.titel;
+    document.title = typisch ? 'Startseite' : ort ? `Küchenstudio für ${ort.name} | ${studio.name}` : studio.seo.titel;
     const beschreibung = ort
       ? `Küchenstudio für ${ort.name}: ${studio.name} in ${studio.kontakt.ort}, nur ${ort.km} km entfernt. ${studio.seo.beschreibung}`
       : studio.seo.beschreibung;
@@ -654,6 +682,11 @@ leiste.addEventListener('click', (ereignis) => {
     schaltePanel('daten');
   } else if (ereignis.target.closest('#wahl-editor')) {
     schaltePanel('editor');
+  } else if (ereignis.target.closest('#wahl-neu')) {
+    schaltePanel('neu');
+  } else if (ereignis.target.closest('#wahl-typisch')) {
+    typisch = !typisch;
+    zeige();
   }
 });
 
@@ -757,6 +790,73 @@ buehne.addEventListener('click', (ereignis) => {
   }
   // „Alle Studios“ ist eine reine Vorschau: Links auf andere Seiten sind dort ohne Wirkung
   if (ansicht === 'alle' && ereignis.target.closest('a[href^="#/"]')) ereignis.preventDefault();
+});
+
+// ---------- Neues Studio ----------
+
+function erzeugeStudio({ name, ort, theme, akzent }) {
+  const vorlage = structuredClone(originale.get('kuechenwerk-elbtal') ?? [...originale.values()][0]);
+  const id = slugFuer(name, [...studios.keys()]);
+  Object.assign(vorlage, { id, name, theme, akzent });
+  vorlage.kontakt = {
+    strasse: 'Musterstraße 1', plz: '00000', ort, telefon: '0123 4567000', email: `info@${id}.example`,
+  };
+  vorlage.seo = {
+    titel: `Küchenstudio in ${ort} | ${name}`,
+    beschreibung: `Ihr Küchenstudio in ${ort}: Persönliche Planung, eigene Montage und Service nach dem Einbau. Jetzt Beratungstermin vereinbaren.`,
+  };
+  vorlage.hero.titel = `Ihre neue Küche. Geplant in ${ort}, gebaut für Ihren Alltag.`;
+  // Bewusst leer: Der Qualitäts-Check zeigt, was ein neues Studio noch braucht
+  vorlage.nachbarorte = [];
+  vorlage.stimmen = [];
+  vorlage.team = [{ name: 'Name der Inhaberin oder des Inhabers', rolle: 'Inhaberin oder Inhaber', seit: 2020 }];
+  studios.set(id, vorlage);
+  originale.set(id, structuredClone(vorlage));
+  return vorlage;
+}
+
+panels.addEventListener('submit', (ereignis) => {
+  if (ereignis.target.id !== 'neu-formular') return;
+  ereignis.preventDefault();
+  const daten = new FormData(ereignis.target);
+  const neu = erzeugeStudio({
+    name: String(daten.get('name')).trim(),
+    ort: String(daten.get('ort')).trim(),
+    theme: String(daten.get('theme')),
+    akzent: String(daten.get('akzent')),
+  });
+  leiste.querySelector('#wahl-studio').innerHTML = studioOptionen();
+  ereignis.target.reset();
+  location.hash = hashFuer(neu.id, neu.theme);
+  schaltePanel('check', true);
+  zeigeMeldungen([{ icon: '🆕', text: `${neu.name} ist angelegt: eine neue JSON-Datei, fertig. Der Qualitäts-Check zeigt, was noch fehlt.` }]);
+});
+
+// ---------- Konfigurator im Hero und Ansicht „Typische Website“ ----------
+
+buehne.addEventListener('input', (ereignis) => {
+  const eingabe = ereignis.target.closest('.konfig input[data-farbe]');
+  if (!eingabe) return;
+  const konfig = eingabe.closest('.konfig');
+  const studio = studios.get(konfig.dataset.studio);
+  const index = studio.kuechen.findIndex((k) => k.id === konfig.dataset.kueche);
+  const kueche = studio.kuechen[index];
+  kueche[eingabe.dataset.farbe] = eingabe.value;
+  // Nur die Bilder neu zeichnen, damit der Farbwähler nicht verschwindet
+  const wurzel = eingabe.closest('.website');
+  const heroBild = wurzel.querySelector('.hero-bild > svg');
+  if (heroBild) heroBild.outerHTML = kuechenSVG(kueche);
+  const galerieBild = wurzel.querySelector(`.kueche[data-kueche="${CSS.escape(kueche.id)}"] .kueche-bild`);
+  if (galerieBild) galerieBild.innerHTML = kuechenSVG(kueche);
+  const editorFeld = panels.querySelector(`[data-pfad="kuechen.${index}.${eingabe.dataset.farbe}"]`);
+  if (editorFeld) editorFeld.value = eingabe.value;
+  aktualisiereDaten(studio);
+});
+
+buehne.addEventListener('click', (ereignis) => {
+  if (!ereignis.target.closest('[data-typisch-aus]')) return;
+  typisch = false;
+  zeige();
 });
 
 // ---------- Terminanfrage (nur Demo) ----------

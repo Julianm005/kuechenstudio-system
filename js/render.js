@@ -69,7 +69,7 @@ export function gueltigeAktionen(studio, heute) {
     .sort((a, b) => parseDatum(a.gueltigBis) - parseDatum(b.gueltigBis));
 }
 
-function kopf(studio, route, aktionen, tel, status) {
+function kopf(studio, route, aktionen, tel, status, typisch) {
   const nav = [
     ['kuechen', 'Küchen'],
     ...(aktionen.length ? [['aktionen', 'Aktionen']] : []),
@@ -82,7 +82,9 @@ function kopf(studio, route, aktionen, tel, status) {
     <div class="inhalt kopf-zeile">
       <div class="kopf-marke">
         <a class="logo" href="${route}">${esc(studio.name)}</a>
-        <p class="status ${status.offen ? 'status-offen' : 'status-zu'}">${esc(status.text)}</p>
+        ${typisch
+          ? '<p class="demo-warnung">⚠ Kein Live-Status: Besucher sehen nicht, ob heute geöffnet ist</p>'
+          : `<p class="status ${status.offen ? 'status-offen' : 'status-zu'}">${esc(status.text)}</p>`}
       </div>
       <nav class="hauptnav" aria-label="Hauptnavigation">
         <ul>
@@ -114,7 +116,15 @@ function hero(studio, route, tel, ort) {
           <a class="btn btn-zweit" href="${route}" data-scroll="${idp}kuechen">Küchen ansehen</a>
         </div>
       </div>
-      <div class="hero-bild">${kuechenSVG(kueche)}</div>
+      <div class="hero-bild">
+        ${kuechenSVG(kueche)}
+        <div class="konfig" data-studio="${esc(studio.id)}" data-kueche="${esc(kueche.id)}" role="group" aria-label="Küche anpassen">
+          <span class="konfig-titel">Probieren Sie es aus:</span>
+          <label>Front <input type="color" data-farbe="front" value="${esc(kueche.front)}"></label>
+          <label>Arbeitsplatte <input type="color" data-farbe="arbeitsplatte" value="${esc(kueche.arbeitsplatte)}"></label>
+          <label>Wand <input type="color" data-farbe="wand" value="${esc(kueche.wand)}"></label>
+        </div>
+      </div>
     </div>
   </section>`;
 }
@@ -131,7 +141,7 @@ function ortAnfahrt(ort) {
   </section>`;
 }
 
-function aktionenBlock(aktionen, heute) {
+function aktionenBlock(aktionen, heute, typisch) {
   if (!aktionen.length) return '';
   return `
   <section class="sektion" id="${idp}aktionen" tabindex="-1" aria-labelledby="${idp}aktionen-titel">
@@ -140,11 +150,18 @@ function aktionenBlock(aktionen, heute) {
       <div class="raster raster-aktionen">
         ${aktionen.map((a) => {
           const bis = parseDatum(a.gueltigBis);
+          const ab = parseDatum(a.gueltigAb);
+          let zeile = `<p class="hinweis"><strong>${nochText(tageZwischen(heute, bis))}</strong> · gültig bis ${kurzDatum(bis)}</p>`;
+          if (typisch && bis < heute) {
+            zeile = `<p class="demo-warnung">⚠ Seit ${tageZwischen(bis, heute)} Tagen abgelaufen und trotzdem sichtbar</p>`;
+          } else if (typisch && ab > heute) {
+            zeile = `<p class="demo-warnung">⚠ Startet erst in ${tageZwischen(heute, ab)} Tagen, steht aber schon da</p>`;
+          }
           return `
         <article class="karte aktion" data-aktion="${esc(a.titel)}">
           <h3>${esc(a.titel)}</h3>
           <p>${esc(a.text)}</p>
-          <p class="hinweis"><strong>${nochText(tageZwischen(heute, bis))}</strong> · gültig bis ${kurzDatum(bis)}</p>
+          ${zeile}
         </article>`;
         }).join('')}
       </div>
@@ -176,7 +193,7 @@ function galerie(studio) {
       <h2 id="${idp}kuechen-titel">Unsere Küchen</h2>
       <div class="raster raster-kuechen">
         ${studio.kuechen.map((k) => `
-        <article class="karte kueche">
+        <article class="karte kueche" data-kueche="${esc(k.id)}">
           <div class="kueche-bild">${kuechenSVG(k)}</div>
           <div class="karte-text">
             <h3>${esc(k.titel)}</h3>
@@ -282,11 +299,11 @@ function mobilleiste(tel) {
   </nav>`;
 }
 
-function besuch(studio, heute, tel) {
+function besuch(studio, heute, tel, typisch) {
   const k = studio.kontakt;
   const heuteSchluessel = TAG_SCHLUESSEL[heute.getDay()];
   const hinweis = schliessHinweis(studio, heute);
-  const pause = schliessung(studio, heute);
+  const pause = typisch ? null : schliessung(studio, heute);
   return `
   <section class="sektion sektion-flaeche" id="${idp}besuch" tabindex="-1" aria-labelledby="${idp}besuch-titel">
     <div class="inhalt besuch-raster">
@@ -297,7 +314,8 @@ function besuch(studio, heute, tel) {
           <a href="${tel}">${esc(k.telefon)}</a><br>
           <a href="mailto:${esc(k.email)}">${esc(k.email)}</a>
         </address>
-        ${hinweis ? `<p class="schliess-hinweis">${esc(hinweis)}</p>` : ''}
+        ${hinweis && !typisch ? `<p class="schliess-hinweis">${esc(hinweis)}</p>` : ''}
+        ${hinweis && typisch ? '<p class="demo-warnung">⚠ Schließtage nicht angekündigt: Kunden stehen vor verschlossener Tür</p>' : ''}
       </div>
       <table class="zeiten">
         <caption class="visuell-versteckt">Öffnungszeiten</caption>
@@ -331,7 +349,15 @@ function faq(studio) {
   </section>`;
 }
 
-function nachbarorte(studio, theme, aktuell) {
+function nachbarorte(studio, theme, aktuell, typisch) {
+  if (typisch) {
+    return `
+  <section class="orte">
+    <div class="inhalt">
+      <p class="demo-warnung">⚠ Keine Seiten für ${studio.nachbarorte.length} Nachbarorte: Wer in ${esc(studio.nachbarorte.map((o) => o.name).slice(0, 3).join(', '))} nach einem Küchenstudio sucht, findet dieses nicht</p>
+    </div>
+  </section>`;
+  }
   return `
   <section class="orte" id="${idp}orte" aria-labelledby="${idp}orte-titel">
     <div class="inhalt">
@@ -372,25 +398,41 @@ function fuss(studio, tel) {
  *   gewähltes Design, (simuliertes) Datum, echte Uhrzeit als Minuten seit Mitternacht
  *   und optional ein Eintrag aus „nachbarorte“ für die Ortsseite
  */
-export function renderSeite(studio, { theme, heute, minuten, ort = null }) {
+/** Banner der Ansicht „Typische Website“: zählt die Probleme, die diese Seite hätte. */
+function typischBanner(studio, heute) {
+  const abgelaufen = studio.aktionen.filter((a) => parseDatum(a.gueltigBis) < heute).length;
+  const kuenftig = studio.aktionen.filter((a) => parseDatum(a.gueltigAb) > heute).length;
+  const probleme = 3 + abgelaufen + kuenftig + (schliessHinweis(studio, heute) ? 1 : 0);
+  return `
+  <div class="typisch-banner" role="note">
+    <p><strong>So würde eine typische Website dieselben Daten zeigen:</strong> ohne Selbstpflege.
+      Die roten Markierungen sind die Probleme aus der Marktstudie. Hier sind es <strong>${probleme}</strong>.</p>
+    <button type="button" class="btn btn-klein" data-typisch-aus>Zurück zur gepflegten Website</button>
+  </div>`;
+}
+
+export function renderSeite(studio, { theme, heute, minuten, ort = null, typisch = false }) {
   idp = `${studio.id}-`;
   const route = `#/${studio.id}/${theme}`;
   const tel = telLink(studio.kontakt.telefon);
-  const aktionen = gueltigeAktionen(studio, heute);
+  const aktionen = typisch
+    ? [...studio.aktionen].sort((a, b) => parseDatum(a.gueltigBis) - parseDatum(b.gueltigBis))
+    : gueltigeAktionen(studio, heute);
   return [
-    kopf(studio, route, aktionen, tel, oeffnungsStatus(studio, heute, minuten)),
+    typisch ? typischBanner(studio, heute) : '',
+    kopf(studio, route, aktionen, tel, oeffnungsStatus(studio, heute, minuten), typisch),
     hero(studio, route, tel, ort),
     ortAnfahrt(ort),
-    aktionenBlock(aktionen, heute),
+    aktionenBlock(aktionen, heute, typisch),
     vorteile(studio),
     galerie(studio),
     marken(studio),
     team(studio),
     stimmen(studio),
     termin(studio, heute),
-    besuch(studio, heute, tel),
+    besuch(studio, heute, tel, typisch),
     faq(studio),
-    nachbarorte(studio, theme, ort),
+    nachbarorte(studio, theme, ort, typisch),
     fuss(studio, tel),
     mobilleiste(tel),
   ].join('');
