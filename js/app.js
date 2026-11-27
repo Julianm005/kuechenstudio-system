@@ -420,6 +420,7 @@ function zeigeInLeiste({ studio, theme }) {
   }
   leiste.querySelector('#wahl-typisch').setAttribute('aria-pressed', String(typisch));
   aktualisiereStrahl(studio);
+  misseLeistenhoehe();
 }
 
 // ---------- Zeitstrahl ----------
@@ -662,6 +663,7 @@ leiste.addEventListener('click', (ereignis) => {
   if (ereignis.target.closest('#hinweis-zu')) {
     leiste.querySelector('#leiste-hinweis').hidden = true;
     merkeHinweisGesehen();
+    misseLeistenhoehe();
     return;
   }
   const menue = ereignis.target.closest('#leiste-menue');
@@ -669,6 +671,7 @@ leiste.addEventListener('click', (ereignis) => {
     const offen = menue.getAttribute('aria-expanded') !== 'true';
     menue.setAttribute('aria-expanded', String(offen));
     leiste.querySelector('#leiste-felder').classList.toggle('offen', offen);
+    misseLeistenhoehe();
     return;
   }
   const ansichtKnopf = ereignis.target.closest('[data-ansicht]');
@@ -910,12 +913,26 @@ buehne.addEventListener('click', (ereignis) => {
   if (ereignis.target.closest('[data-termin-neu]')) zeige('datum');
 });
 
+/** Misst die Demo-Leiste und legt ihre Höhe als --leiste-hoehe ab (für Anker-Sprünge und Rahmenhöhen). */
+function misseLeistenhoehe() {
+  document.documentElement.style.setProperty('--leiste-hoehe', `${Math.round(leiste.getBoundingClientRect().height)}px`);
+}
+
+// Der ResizeObserver fängt Änderungen durch Fenstergröße und Umbrüche ab. Zusätzlich wird bei jedem Rendern
+// und an den Stellen gemessen, die die Höhe selbst ändern (Hinweis, Menü), das ist zuverlässiger.
+function beobachteLeistenhoehe() {
+  misseLeistenhoehe();
+  window.addEventListener('resize', misseLeistenhoehe);
+  if (typeof ResizeObserver !== 'undefined') new ResizeObserver(misseLeistenhoehe).observe(leiste);
+}
+
 async function start() {
   for (const studio of await Promise.all(STUDIO_IDS.map(ladeStudio))) {
     studios.set(studio.id, studio);
     originale.set(studio.id, structuredClone(studio));
   }
   baueLeiste();
+  beobachteLeistenhoehe();
   window.addEventListener('hashchange', () => zeige());
   await zeige();
 }

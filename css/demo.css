@@ -266,9 +266,11 @@ body {
   opacity: 0;
 }
 
-/* Die feststehende Leiste verdeckt sonst die Überschrift beim Anspringen eines Abschnitts */
+/* Die feststehende Leiste verdeckt sonst die Überschrift beim Anspringen eines Abschnitts.
+   Ihre Höhe misst js/app.js (ResizeObserver) und legt sie in --leiste-hoehe ab: sie ändert sich
+   mit Fensterbreite, Hinweis und Zeitstrahl. */
 .ansicht-desktop .website [id] {
-  scroll-margin-top: 3.5rem;
+  scroll-margin-top: calc(var(--leiste-hoehe, 6rem) + 1rem);
 }
 
 /* ---------- Ansicht: Desktop / Handy / Alle Studios ---------- */
