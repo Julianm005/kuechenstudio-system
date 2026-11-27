@@ -1,0 +1,54 @@
+/* Theme „atelier“: dunkel, edel, Galerie – Fast-Schwarz, Gold-Akzent, eckig.
+   Setzt CSS-Variablen plus wenige gezielte Overrides. */
+
+[data-theme="atelier"] {
+  --bg: #0f0f10;
+  --surface: #19191b;
+  --text: #ece7dd;
+  --muted: #a8a196;
+  --line: #2e2d2a;
+  --accent: #c9a45c;
+  --accent-contrast: #111111;
+  --font-head: Georgia, "Times New Roman", serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --radius: 0;
+  --radius-rund: 0;
+  --radius-pille: 0;
+  --head-weight: 400;
+  --head-transform: uppercase;
+  --head-spacing: 0.1em;
+}
+
+[data-theme="atelier"] h1 { font-size: clamp(1.6rem, 6cqi, 3rem); }
+[data-theme="atelier"] h2 { font-size: clamp(1.25rem, 4cqi, 1.8rem); }
+[data-theme="atelier"] h3 { font-size: 1rem; }
+
+/* Goldene Linie über den Überschriften */
+[data-theme="atelier"] .sektion h2::before {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 1px;
+  margin-bottom: 1rem;
+  background: var(--accent);
+}
+
+/* Navigation, Buttons und Beschriftungen in Versalien */
+[data-theme="atelier"] .hauptnav a,
+[data-theme="atelier"] .btn,
+[data-theme="atelier"] .eyebrow,
+[data-theme="atelier"] .marke,
+[data-theme="atelier"] .marken-titel {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+[data-theme="atelier"] .hauptnav a { font-size: 0.8rem; }
+[data-theme="atelier"] .btn { font-size: 0.8rem; font-weight: 600; }
+[data-theme="atelier"] .eyebrow { color: var(--accent); font-size: 0.8rem; }
+
+[data-theme="atelier"] .logo { font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.14em; }
+
+[data-theme="atelier"] .karte { border-color: var(--line); }
+[data-theme="atelier"] .aktion { border-left-color: var(--accent); }
+[data-theme="atelier"] .sektion-flaeche .karte { background: var(--bg); }

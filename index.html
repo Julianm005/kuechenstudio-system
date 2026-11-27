@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Küchenstudio-Website-System | Demo</title>
+  <meta name="description" content="Demo: Eine komplette Küchenstudio-Website entsteht aus einer JSON-Datei und einem austauschbaren Design-Layer. Alle Studios sind fiktiv.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/themes/modern.css">
+  <link rel="stylesheet" href="css/themes/landhaus.css">
+  <link rel="stylesheet" href="css/themes/atelier.css">
+  <link rel="stylesheet" href="css/demo.css">
+</head>
+<body>
+  <!-- Demo-Leiste: gehört nicht zur Website, wird in js/app.js befüllt -->
+  <div id="demo-leiste"></div>
+
+  <!-- Bühne: hier rendert js/render.js die Studio-Seite. Der Geräterahmen (.geraet) ist nur in
+       der Handy-Ansicht sichtbar; „Alle Studios“ baut drei weitere Container in #alle-studios. -->
+  <div id="buehne" class="ansicht-desktop">
+    <div class="geraet" id="geraet-einzeln">
+      <main id="website" class="website"></main>
+    </div>
+    <div id="alle-studios" hidden></div>
+  </div>
+
+  <!-- Seitenpanels (Qualitäts-Check, Daten ansehen) -->
+  <div id="demo-panels"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

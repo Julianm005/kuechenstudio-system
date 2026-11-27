@@ -1,0 +1,116 @@
+{
+  "id": "landhaus-moritzburg",
+  "name": "Landhausküchen Moritzburg",
+  "slogan": "Wohnküchen mit Herz und Handwerk",
+  "theme": "landhaus",
+  "akzent": "#9a5b3c",
+  "kontakt": {
+    "strasse": "Mustergasse 3",
+    "plz": "01468",
+    "ort": "Moritzburg",
+    "telefon": "0123 4567801",
+    "email": "info@landhaus-moritzburg.example"
+  },
+  "seo": {
+    "titel": "Küchenstudio in Moritzburg | Landhausküchen Moritzburg",
+    "beschreibung": "Landhausküchen aus Moritzburg: Handwerklich geplant, vom Tischlermeister eingebaut. Besuchen Sie unsere Ausstellung."
+  },
+  "hero": {
+    "titel": "Die Küche, in der alle zusammenkommen.",
+    "text": "Landhausküchen mit Charakter: gemütlich, langlebig und passgenau vom Tischlermeister eingebaut. Kommen Sie vorbei und fühlen Sie das Holz.",
+    "kueche": "cremeweiss-landhaus"
+  },
+  "vorteile": [
+    {
+      "titel": "Handwerk aus der Region",
+      "text": "Unser Tischlermeister passt jede Küche an Ihre Räume an, auch bei schiefen Wänden und Dachschrägen."
+    },
+    {
+      "titel": "Beratung mit Zeit",
+      "text": "Bei einer Tasse Kaffee in der Ausstellung finden wir gemeinsam heraus, was Ihnen wirklich wichtig ist."
+    },
+    {
+      "titel": "Küchen, die bleiben",
+      "text": "Massive Materialien und bewährte Beschläge. Ihre Küche soll Jahrzehnte halten, nicht nur Jahre."
+    }
+  ],
+  "kuechen": [
+    {
+      "id": "cremeweiss-landhaus",
+      "titel": "Landhausküche in Cremeweiß",
+      "stil": "landhaus",
+      "front": "#efe6d3",
+      "arbeitsplatte": "#8a6a4a",
+      "wand": "#f6efe0",
+      "marke": "Häcker",
+      "beschreibung": "Kassettentüren in Cremeweiß mit Eichenarbeitsplatte: der Klassiker für gemütliche Wohnküchen.",
+      "alt": "Landhausküche mit cremeweißen Kassettentüren, Eichenarbeitsplatte, offenem Tellerregal und Dunstabzug als Kaminhaube"
+    },
+    {
+      "id": "graublau-landhaus",
+      "titel": "Landhaus in Graublau",
+      "stil": "landhaus",
+      "front": "#7e93a3",
+      "arbeitsplatte": "#d8cfc0",
+      "wand": "#efe9dc",
+      "marke": "Nobilia",
+      "beschreibung": "Ein zurückhaltendes Graublau auf Holzdielen: frisch, ruhig und trotzdem warm.",
+      "alt": "Landhausküche mit graublauen Kassettenfronten, heller Arbeitsplatte und Holzdielenboden"
+    },
+    {
+      "id": "eiche-insel",
+      "titel": "Landhausinsel in Eiche natur",
+      "stil": "insel",
+      "front": "#b89b72",
+      "arbeitsplatte": "#f0ebe1",
+      "wand": "#f3ecdd",
+      "marke": "Schüller",
+      "beschreibung": "Große Insel in Eiche natur mit Platz für die ganze Familie am Küchentisch.",
+      "alt": "Küche in Eiche natur mit großer Kochinsel, heller Arbeitsplatte, drei Pendelleuchten und Barhockern"
+    }
+  ],
+  "marken": ["Häcker", "Nobilia", "Schüller", "Siemens", "Bosch", "Neff"],
+  "team": [
+    { "name": "Helga Brandt", "rolle": "Inhaberin & Beratung", "seit": 2009 },
+    { "name": "Frank Brandt", "rolle": "Tischlermeister & Montage", "seit": 2009 },
+    { "name": "Lena Schulz", "rolle": "Küchenberaterin", "seit": 2021 }
+  ],
+  "aktionen": [
+    {
+      "titel": "Küchenneuheiten 2025 zum Vorteilspreis",
+      "text": "Unsere Messe-Neuheiten als Ausstellungsstücke zum Sonderpreis, nur solange der Vorrat reicht.",
+      "gueltigAb": "2026-10-01",
+      "gueltigBis": "2026-12-31"
+    }
+  ],
+  "oeffnungszeiten": {
+    "mo": null,
+    "di": ["09:30", "17:30"],
+    "mi": ["09:30", "17:30"],
+    "do": ["09:30", "17:30"],
+    "fr": ["09:30", "17:30"],
+    "sa": ["09:00", "13:00"],
+    "so": null
+  },
+  "schliesstage": [
+    { "von": "2026-12-24", "bis": "2027-01-06", "grund": "Winterpause" }
+  ],
+  "nachbarorte": [
+    { "name": "Radebeul", "slug": "radebeul", "km": 8 },
+    { "name": "Coswig", "slug": "coswig", "km": 10 }
+  ],
+  "faq": [
+    {
+      "frage": "Kann ich die Küche in der Ausstellung ansehen?",
+      "antwort": "Ja, in unserer Ausstellung stehen mehrere aufgebaute Küchen. Gern auch außerhalb der Öffnungszeiten nach Absprache."
+    },
+    {
+      "frage": "Passen Landhausküchen auch in kleine Räume?",
+      "antwort": "Auf jeden Fall. Dank Maßanfertigung nutzen wir jeden Winkel, auch unter Dachschrägen."
+    },
+    {
+      "frage": "Wie pflege ich Holzfronten richtig?",
+      "antwort": "Ein feuchtes Tuch genügt im Alltag. Beim Einbau erhalten Sie von uns eine Pflegeanleitung für Ihr Material."
+    }
+  ]
+}

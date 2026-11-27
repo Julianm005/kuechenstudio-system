@@ -1,0 +1,47 @@
+/* Theme „landhaus“: warm, handwerklich – Creme, Holztöne, Serifenschrift.
+   Setzt CSS-Variablen plus wenige gezielte Overrides. */
+
+[data-theme="landhaus"] {
+  --bg: #f4ecdc;
+  --surface: #fbf6ea;
+  --text: #3a2c20;
+  --muted: #6b5844;
+  --line: #dccfb6;
+  --accent: #9a5b3c;
+  --accent-contrast: #ffffff;
+  --font-head: Georgia, "Times New Roman", serif;
+  --font-body: Georgia, "Times New Roman", serif;
+  --radius: 1rem;
+  --head-weight: 700;
+}
+
+/* kleine Zierlinie unter den Überschriften */
+[data-theme="landhaus"] .sektion h2::after {
+  content: "";
+  display: block;
+  width: 3rem;
+  height: 3px;
+  margin-top: 0.5rem;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+[data-theme="landhaus"] .sektion-flaeche {
+  background: #efe4cf;
+}
+
+[data-theme="landhaus"] .sektion-flaeche .karte {
+  background: var(--surface);
+}
+
+/* Fuß in dunklem Holzton */
+[data-theme="landhaus"] .fuss {
+  background: #3a2c20;
+  border-top-color: #3a2c20;
+  color: #f4ecdc;
+}
+
+[data-theme="landhaus"] .fuss-rechtliches,
+[data-theme="landhaus"] .demo-hinweis {
+  color: #d9c9ad;
+}

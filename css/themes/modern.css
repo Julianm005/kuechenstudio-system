@@ -1,0 +1,16 @@
+/* Theme „modern“: hell, klar, viel Weißraum. Setzt nur CSS-Variablen. */
+
+[data-theme="modern"] {
+  --bg: #f7f6f2;
+  --surface: #ffffff;
+  --text: #1d2421;
+  --muted: #56605a;
+  --line: #e3e1da;
+  --accent: #4f7a63;
+  --accent-contrast: #ffffff;
+  --font-head: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --radius: 0.6rem;
+  --head-weight: 800;
+  --head-spacing: -0.01em;
+}

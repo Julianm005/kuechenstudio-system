@@ -1,0 +1,118 @@
+{
+  "id": "atelier-kochraum",
+  "name": "Atelier Kochraum",
+  "slogan": "Küche als Raumgestaltung",
+  "theme": "atelier",
+  "akzent": "#c9a45c",
+  "kontakt": {
+    "strasse": "Musterplatz 8",
+    "plz": "01067",
+    "ort": "Dresden",
+    "telefon": "0123 4567812",
+    "email": "atelier@kochraum.example"
+  },
+  "seo": {
+    "titel": "Küchenstudio Dresden | Atelier Kochraum",
+    "beschreibung": "Atelier Kochraum in Dresden: Hochwertige Designküchen, individuelle Lichtplanung und Beratung nach Terminvereinbarung."
+  },
+  "hero": {
+    "titel": "Küchen wie Architektur.",
+    "text": "Wir planen Küchen als Teil Ihres Raums: klare Linien, edle Materialien und ein Lichtkonzept, das den Abend inszeniert.",
+    "kueche": "schwarz-grifflos"
+  },
+  "vorteile": [
+    {
+      "titel": "Planung als Raumkonzept",
+      "text": "Küche, Licht und Wohnbereich entstehen zusammen. So wirkt das Ergebnis wie aus einem Guss."
+    },
+    {
+      "titel": "Ausgesuchte Materialien",
+      "text": "Naturstein, Metall und Echtholz in feinen Oberflächen, die auch nach Jahren noch gut aussehen."
+    },
+    {
+      "titel": "Lichtplanung inklusive",
+      "text": "Unsere Lichtplanerin entwirft Arbeitslicht und Stimmungslicht passend zu Ihrer Küche."
+    }
+  ],
+  "kuechen": [
+    {
+      "id": "schwarz-grifflos",
+      "titel": "Grifflos in Tiefschwarz",
+      "stil": "grifflos",
+      "front": "#2b2e30",
+      "arbeitsplatte": "#b9aa8a",
+      "wand": "#17191a",
+      "marke": "Leicht",
+      "beschreibung": "Mattschwarze Fronten mit Natursteinplatte: reduziert, ruhig und besonders hochwertig.",
+      "alt": "Grifflose Küche mit mattschwarzen Fronten, heller Natursteinplatte und Hochschrank mit Backofen"
+    },
+    {
+      "id": "anthrazit-insel",
+      "titel": "Insel in Anthrazit",
+      "stil": "insel",
+      "front": "#3a3f43",
+      "arbeitsplatte": "#d6d0c4",
+      "wand": "#222527",
+      "marke": "Leicht",
+      "beschreibung": "Anthrazitfarbene Küchenzeile mit frei stehender Insel und drei Pendelleuchten.",
+      "alt": "Anthrazitfarbene Küche mit frei stehender Insel, heller Arbeitsplatte, drei Pendelleuchten und Barhockern"
+    },
+    {
+      "id": "bronze-grifflos",
+      "titel": "Grifflos in Bronze",
+      "stil": "grifflos",
+      "front": "#6b5a48",
+      "arbeitsplatte": "#cfc7b8",
+      "wand": "#2a2623",
+      "marke": "Schüller",
+      "beschreibung": "Warme Bronzetöne und eine helle Arbeitsplatte schaffen einen Raum, in dem man gern bleibt.",
+      "alt": "Grifflose Küche mit bronzefarbenen Fronten, heller Arbeitsplatte und dunkler Wand"
+    }
+  ],
+  "marken": ["Leicht", "Schüller", "Gaggenau", "Miele", "Quooker", "Dornbracht"],
+  "team": [
+    { "name": "Nora Lindner", "rolle": "Inhaberin & Designerin", "seit": 2018 },
+    { "name": "Paul Escher", "rolle": "Lichtplanung", "seit": 2019 },
+    { "name": "Mia Kaiser", "rolle": "Kundenbetreuung", "seit": 2022 }
+  ],
+  "aktionen": [
+    {
+      "titel": "Showroom-Abend: Licht & Küche",
+      "text": "Am 12. Dezember zeigen wir live, wie Lichtplanung eine Küche verwandelt. Mit Fingerfood, Wein und persönlicher Beratung. Anmeldung per Telefon.",
+      "gueltigAb": "2026-11-20",
+      "gueltigBis": "2026-12-12"
+    }
+  ],
+  "oeffnungszeiten": {
+    "mo": ["11:00", "19:00"],
+    "di": ["11:00", "19:00"],
+    "mi": ["11:00", "19:00"],
+    "do": ["11:00", "19:00"],
+    "fr": ["11:00", "17:00"],
+    "sa": null,
+    "so": null
+  },
+  "schliesstage": [
+    { "von": "2026-12-24", "bis": "2027-01-04", "grund": "Weihnachtspause" }
+  ],
+  "nachbarorte": [
+    { "name": "Radebeul", "slug": "radebeul", "km": 7 },
+    { "name": "Freital", "slug": "freital", "km": 9 },
+    { "name": "Heidenau", "slug": "heidenau", "km": 12 },
+    { "name": "Pirna", "slug": "pirna", "km": 17 }
+  ],
+  "faq": [
+    {
+      "frage": "Brauche ich einen Termin?",
+      "antwort": "Wir empfehlen eine Terminvereinbarung, damit wir uns für Ihr Projekt Zeit nehmen. Spontane Besuche sind zu den Öffnungszeiten ebenfalls willkommen."
+    },
+    {
+      "frage": "Arbeiten Sie mit Architekten zusammen?",
+      "antwort": "Ja, wir stimmen uns gern mit Architekten und Innenarchitekten ab und liefern alle Unterlagen in den gewünschten Formaten."
+    },
+    {
+      "frage": "Was kostet die Planung?",
+      "antwort": "Das Erstgespräch ist kostenlos. Bei Beauftragung verrechnen wir die Planungsleistung mit dem Kaufpreis Ihrer Küche."
+    }
+  ]
+}

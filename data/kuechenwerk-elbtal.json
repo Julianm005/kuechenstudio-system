@@ -1,0 +1,132 @@
+{
+  "id": "kuechenwerk-elbtal",
+  "name": "Küchenwerk Elbtal",
+  "slogan": "Küchen, die zu Ihrem Alltag passen",
+  "theme": "modern",
+  "akzent": "#4f7a63",
+  "kontakt": {
+    "strasse": "Musterstraße 12",
+    "plz": "01662",
+    "ort": "Meißen",
+    "telefon": "0123 4567890",
+    "email": "hallo@kuechenwerk-elbtal.example"
+  },
+  "seo": {
+    "titel": "Küchenstudio in Meißen | Küchenwerk Elbtal",
+    "beschreibung": "Ihr Küchenstudio in Meißen: Persönliche Planung, eigene Montage und Service nach dem Einbau. Jetzt Beratungstermin vereinbaren."
+  },
+  "hero": {
+    "titel": "Ihre neue Küche. Geplant in Meißen, gebaut für Ihren Alltag.",
+    "text": "Wir hören zu, messen genau aus und planen mit Ihnen eine Küche, die zu Ihrem Zuhause passt. Von der ersten Skizze bis zum letzten Handgriff aus einer Hand.",
+    "kueche": "salbei-grifflos"
+  },
+  "vorteile": [
+    {
+      "titel": "Planung mit Aufmaß vor Ort",
+      "text": "Wir messen Ihre Räume genau aus und planen mit Ihnen in 3D. So gibt es keine Überraschungen beim Einbau."
+    },
+    {
+      "titel": "Montage durch eigenes Team",
+      "text": "Unsere Monteure bauen Ihre Küche auf, inklusive Elektro- und Wasseranschluss. Ein Ansprechpartner für alles."
+    },
+    {
+      "titel": "Service nach dem Einbau",
+      "text": "Auch nach Jahren erreichen Sie uns direkt, ohne Hotline und ohne Warteschleife."
+    }
+  ],
+  "kuechen": [
+    {
+      "id": "salbei-grifflos",
+      "titel": "Grifflos in Salbeigrün",
+      "stil": "grifflos",
+      "front": "#8aa595",
+      "arbeitsplatte": "#e9e4da",
+      "wand": "#f3f1ec",
+      "marke": "Nobilia",
+      "beschreibung": "Ruhige Fronten ohne Griffe, helle Arbeitsplatte und viel Stauraum in breiten Schubladen.",
+      "alt": "Grifflose Küche mit salbeigrünen Fronten, heller Arbeitsplatte und Hochschrank mit Backofen"
+    },
+    {
+      "id": "weiss-insel",
+      "titel": "Kochinsel in Weiß und Stein",
+      "stil": "insel",
+      "front": "#f1f1ee",
+      "arbeitsplatte": "#5b5f62",
+      "wand": "#e6e8ea",
+      "marke": "Schüller",
+      "beschreibung": "Küche mit großer Insel als Mittelpunkt: zum Kochen, Essen und Zusammensein.",
+      "alt": "Weiße Küchenzeile an der Wand mit großer Kochinsel, dunkler Steinarbeitsplatte und drei Pendelleuchten"
+    },
+    {
+      "id": "eiche-landhaus",
+      "titel": "Landhausstil in heller Eiche",
+      "stil": "landhaus",
+      "front": "#c8b592",
+      "arbeitsplatte": "#efe9dd",
+      "wand": "#f7f3ea",
+      "marke": "Häcker",
+      "beschreibung": "Kassettenfronten in heller Eiche, offenes Tellerregal und runde Knöpfe: modern interpretiert.",
+      "alt": "Landhausküche mit Kassettenfronten in heller Eiche, offenem Tellerregal und Dunstabzug als Kaminhaube"
+    }
+  ],
+  "marken": ["Nobilia", "Schüller", "Häcker", "Bosch", "Miele", "Blanco"],
+  "team": [
+    { "name": "Sandra Weber", "rolle": "Inhaberin & Planerin", "seit": 2014 },
+    { "name": "Tobias Richter", "rolle": "Küchenplaner", "seit": 2017 },
+    { "name": "Mareike Hoffmann", "rolle": "Planung & Innenarchitektur", "seit": 2020 },
+    { "name": "Jens Kunze", "rolle": "Montageleiter", "seit": 2012 }
+  ],
+  "aktionen": [
+    {
+      "titel": "Herbst-Aktion: 10 % auf Elektrogeräte",
+      "text": "Beim Kauf einer kompletten Küche gibt es 10 % Nachlass auf alle Elektrogeräte.",
+      "gueltigAb": "2026-09-15",
+      "gueltigBis": "2026-11-15"
+    },
+    {
+      "titel": "Winter-Aktion: Arbeitsplatten-Upgrade gratis",
+      "text": "Bis kurz vor Weihnachten bestellen: Wir veredeln Ihre Arbeitsplatte kostenlos zur nächsten Qualitätsstufe.",
+      "gueltigAb": "2026-11-01",
+      "gueltigBis": "2026-12-20"
+    },
+    {
+      "titel": "Ausstellungsküchen-Abverkauf",
+      "text": "Im Januar räumen wir unsere Ausstellung: Musterküchen mit bis zu 40 % Nachlass, sofort verfügbar.",
+      "gueltigAb": "2027-01-02",
+      "gueltigBis": "2027-01-31"
+    }
+  ],
+  "oeffnungszeiten": {
+    "mo": ["10:00", "18:00"],
+    "di": ["10:00", "18:00"],
+    "mi": ["10:00", "18:00"],
+    "do": ["10:00", "19:00"],
+    "fr": ["10:00", "18:00"],
+    "sa": ["10:00", "14:00"],
+    "so": null
+  },
+  "schliesstage": [
+    { "von": "2026-12-24", "bis": "2027-01-01", "grund": "Betriebsferien" }
+  ],
+  "nachbarorte": [
+    { "name": "Coswig", "slug": "coswig", "km": 9 },
+    { "name": "Radebeul", "slug": "radebeul", "km": 17 },
+    { "name": "Großenhain", "slug": "grossenhain", "km": 22 },
+    { "name": "Riesa", "slug": "riesa", "km": 28 },
+    { "name": "Dresden", "slug": "dresden", "km": 25 }
+  ],
+  "faq": [
+    {
+      "frage": "Wie lange dauert es von der Planung bis zur fertigen Küche?",
+      "antwort": "Rechnen Sie mit etwa 8 bis 12 Wochen ab Bestellung. Die Planung davor nehmen wir uns so viel Zeit, wie Sie brauchen."
+    },
+    {
+      "frage": "Ist die Erstberatung kostenlos?",
+      "antwort": "Ja. Die Erstberatung und ein erster Planungsvorschlag sind für Sie kostenlos und unverbindlich."
+    },
+    {
+      "frage": "Übernehmen Sie auch den Rückbau der alten Küche?",
+      "antwort": "Ja, auf Wunsch demontieren und entsorgen wir Ihre alte Küche und bereiten Anschlüsse und Wände für die neue vor."
+    }
+  ]
+}

@@ -1,0 +1,451 @@
+/* base.css – Layout und Bausteine der Website.
+   Nutzt ausschließlich CSS-Variablen aus den Themes (css/themes/*.css):
+   --bg --surface --text --muted --line --accent --accent-contrast --font-head --font-body --radius
+   Optional (mit Rückfallwert): --head-weight --head-transform --head-spacing --radius-rund --radius-pille
+   Responsiv wird über Container Queries gesteuert (.website ist der Container). */
+
+.website {
+  container-type: inline-size;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.website *,
+.website *::before,
+.website *::after {
+  box-sizing: border-box;
+}
+
+.website h1,
+.website h2,
+.website h3,
+.website .logo,
+.website .fuss-name {
+  font-family: var(--font-head);
+  font-weight: var(--head-weight, 700);
+  text-transform: var(--head-transform, none);
+  letter-spacing: var(--head-spacing, normal);
+  line-height: 1.2;
+  margin: 0 0 0.6em;
+}
+
+.website h1,
+.website h2,
+.website h3 {
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+/* Grid-Kinder dürfen schmaler werden als ihr längstes Wort (sonst läuft die Seite über) */
+.website .hero-raster > *,
+.website .besuch-raster > *,
+.website .fuss-raster > * {
+  min-width: 0;
+}
+
+.website h1 { font-size: clamp(1.9rem, 6cqi, 3rem); }
+.website h2 { font-size: clamp(1.45rem, 4.5cqi, 2.1rem); }
+.website h3 { font-size: 1.15rem; margin-bottom: 0.4em; }
+.website p { margin: 0 0 1em; }
+
+.website a { color: inherit; text-underline-offset: 0.2em; }
+
+.website :focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.website [tabindex="-1"]:focus { outline: none; }
+
+.visuell-versteckt {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.inhalt {
+  width: min(100% - 2rem, 70rem);
+  margin-inline: auto;
+}
+
+.inhalt-schmal { max-width: 46rem; }
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.6em 1.4em;
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+}
+
+.website .btn { color: var(--accent-contrast); }
+
+.btn:hover { filter: brightness(1.08); }
+
+.website .btn-zweit {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--text);
+}
+
+.btn-klein { min-height: 2.5rem; padding: 0.4em 1em; font-size: 0.95rem; }
+
+.buttons { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+/* ---------- Kopf ---------- */
+
+.kopf {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.kopf-zeile {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding-block: 0.8rem;
+}
+
+.website .logo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  margin: 0;
+  font-size: 1.2rem;
+  text-decoration: none;
+}
+
+.kopf-marke { min-width: 0; }
+
+.website .status {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0.15rem 0 0;
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  line-height: 1.3;
+}
+
+.status::before {
+  content: "";
+  flex: none;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: #b4533c;
+}
+
+.status-offen::before { background: #2e9e62; }
+
+.hauptnav { grid-column: 1 / -1; grid-row: 2; }
+
+.hauptnav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hauptnav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding-block: 0.4rem;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.hauptnav a:hover { text-decoration: underline; }
+
+@container (min-width: 48rem) {
+  .kopf-zeile { grid-template-columns: auto 1fr auto; }
+  .hauptnav { grid-column: 2; grid-row: 1; justify-self: end; }
+}
+
+/* ---------- Hero ---------- */
+
+.hero { padding-block: clamp(2rem, 8cqi, 4.5rem); }
+
+.hero-raster { display: grid; gap: 2rem; align-items: center; }
+
+.zurueck { margin-bottom: 1.25rem; font-size: 0.95rem; font-weight: 600; }
+.zurueck a { display: inline-flex; align-items: center; min-height: 2.75rem; }
+
+.eyebrow {
+  margin-bottom: 0.75em;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.hero-lead { max-width: 38rem; color: var(--muted); font-size: 1.1rem; }
+
+.hero-bild svg,
+.kueche-bild svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.hero-bild svg { border-radius: var(--radius); }
+
+@container (min-width: 52rem) {
+  .hero-raster { grid-template-columns: 1fr 1.1fr; gap: 3rem; }
+}
+
+/* ---------- Sektionen und Raster ---------- */
+
+.sektion { padding-block: clamp(2.5rem, 8cqi, 4.5rem); }
+
+.sektion-flaeche {
+  background: var(--surface);
+  border-block: 1px solid var(--line);
+}
+
+.raster {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.raster-aktionen { grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); }
+.raster-vorteile { grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
+.raster-kuechen  { grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 1.5rem; }
+.raster-team     { grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); }
+
+.karte {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+
+.sektion-flaeche .karte { background: var(--bg); }
+
+.karte p:last-child { margin-bottom: 0; }
+
+/* Aktionen */
+
+.aktion { border-left: 4px solid var(--accent); }
+.hinweis { color: var(--muted); font-size: 0.95rem; }
+
+/* Vorteile */
+
+.nummer {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: 0.75rem;
+  border-radius: var(--radius-rund, 50%);
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+/* Küchen-Galerie */
+
+.kueche { padding: 0; overflow: hidden; }
+.kueche-bild { background: var(--line); }
+.karte-text { padding: 1.25rem; }
+
+.marke {
+  margin-bottom: 0.5em;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Marken */
+
+.marken {
+  padding-block: 1.75rem;
+  border-block: 1px solid var(--line);
+}
+
+.website .marken-titel {
+  margin: 0 0 0.75rem;
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.marken-liste {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+/* Team */
+
+.person { text-align: center; }
+
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 0.75rem;
+  border-radius: var(--radius-rund, 50%);
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.person p { margin-bottom: 0.25em; }
+.seit { color: var(--muted); font-size: 0.9rem; }
+
+/* Besuch / Öffnungszeiten */
+
+.besuch-raster { display: grid; gap: 2rem; }
+
+.adresse { font-style: normal; }
+
+/* Telefon und E-Mail sind die wichtigsten Tipp-Ziele auf dem Handy */
+.adresse a { display: inline-flex; align-items: center; min-height: 2.75rem; }
+
+.schliess-hinweis {
+  margin-top: 1.25rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--accent);
+  border-left-width: 4px;
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-weight: 600;
+}
+
+.zeiten { width: 100%; max-width: 28rem; border-collapse: collapse; }
+
+.zeiten th,
+.zeiten td {
+  padding: 0.55rem 0.5rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.zeiten th { font-weight: 600; }
+.zeiten tr.heute { background: var(--bg); }
+.zeiten tr.heute th,
+.zeiten tr.heute td { border-bottom-color: var(--accent); font-weight: 700; }
+
+.heute-marke {
+  margin-left: 0.4rem;
+  padding: 0.1em 0.55em;
+  border-radius: var(--radius-pille, 999px);
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+@container (min-width: 44rem) {
+  .besuch-raster { grid-template-columns: 1fr 1.2fr; gap: 3rem; }
+}
+
+/* FAQ */
+
+.faq-eintrag { border-bottom: 1px solid var(--line); }
+
+.faq-eintrag summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.faq-eintrag summary::-webkit-details-marker { display: none; }
+
+.faq-eintrag summary::after {
+  content: "+";
+  flex: none;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.faq-eintrag[open] summary::after { content: "–"; }
+.faq-eintrag p { margin: 0 0 1rem; color: var(--muted); }
+
+/* Nachbarorte */
+
+.orte {
+  padding-block: 2.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.website .orte-titel { font-size: 1.1rem; margin-bottom: 0.75rem; }
+
+.orte-liste {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.orte-liste a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: 600; }
+
+/* Footer */
+
+.fuss {
+  padding-block: 2.5rem 1.5rem;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+}
+
+.fuss-raster { display: grid; gap: 1.5rem; }
+.fuss-name { font-size: 1.15rem; margin-bottom: 0.5em; }
+.fuss-rechtliches { color: var(--muted); }
+
+.demo-hinweis {
+  margin: 2rem auto 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+@container (min-width: 44rem) {
+  .fuss-raster { grid-template-columns: 1fr auto; align-items: start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .website * { transition: none !important; animation: none !important; }
+}

@@ -1,0 +1,357 @@
+/* demo.css – Demo-Leiste und Seitenpanels.
+   Bewusst getrennt von der Website: neutrales Dunkelgrau, kleine Schrift, keine Theme-Variablen. */
+
+body {
+  margin: 0;
+  background: #202020;
+}
+
+#demo-leiste {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #2b2b2b;
+  border-bottom: 1px solid #444;
+  color: #e8e8e8;
+  font: 13px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+#demo-leiste *,
+#demo-leiste *::before,
+#demo-leiste *::after {
+  box-sizing: border-box;
+}
+
+.leiste-innen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.25rem;
+  padding: 0.5rem 1rem;
+}
+
+/* Felder liegen direkt in der Leiste (Desktop); auf dem Handy klappen sie hinter „Steuerung“ zusammen */
+.leiste-felder { display: contents; }
+.leiste-knopf.leiste-menue { display: none; margin-left: auto; }
+
+.leiste-hinweis {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 1rem;
+  background: #3b3b3b;
+  border-top: 1px solid #555;
+}
+
+.leiste-hinweis[hidden] { display: none; }
+.leiste-hinweis p { margin: 0; }
+
+.leiste-hinweis button {
+  flex: none;
+  min-height: 1.9rem;
+  padding: 0.2rem 0.8rem;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  background: #e8e8e8;
+  color: #202020;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (max-width: 720px) {
+  .leiste-knopf.leiste-menue { display: inline-flex; }
+
+  .leiste-felder {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    width: 100%;
+  }
+
+  .leiste-felder.offen { display: flex; }
+
+  .leiste-hinweis { flex-direction: column; align-items: flex-start; }
+}
+
+.leiste-marke {
+  padding: 0.1rem 0.5rem;
+  border-radius: 3px;
+  background: #e8e8e8;
+  color: #2b2b2b;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.leiste-feld {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.leiste-feld input[type="date"],
+.leiste-feld button,
+.leiste-feld select {
+  min-height: 1.9rem;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid #666;
+  border-radius: 4px;
+  background: #3a3a3a;
+  color: #f2f2f2;
+  font: inherit;
+}
+
+.leiste-knopf {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 1.9rem;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid #666;
+  border-radius: 4px;
+  background: #3a3a3a;
+  color: #f2f2f2;
+  font: inherit;
+  cursor: pointer;
+}
+
+.leiste-knopf:hover,
+.leiste-knopf[aria-expanded="true"] { background: #4a4a4a; }
+
+.badge {
+  padding: 0 0.5rem;
+  border-radius: 999px;
+  background: #2e9e62;
+  color: #0b1f14;
+  font-weight: 700;
+}
+
+.badge-warnung { background: #f2b84b; color: #2a1e00; }
+.badge-fehler { background: #e5736a; color: #2b0805; }
+
+/* Seitenpanel (Qualitäts-Check, später auch Daten ansehen) */
+.panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 200;
+  width: min(28rem, 100%);
+  overflow-y: auto;
+  padding: 1rem 1.25rem 2rem;
+  background: #2b2b2b;
+  border-left: 1px solid #555;
+  color: #e8e8e8;
+  font: 14px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.35);
+}
+
+.panel-breit { width: min(44rem, 100%); }
+
+.tabs { display: flex; gap: 0.25rem; margin-bottom: 0.75rem; }
+
+.tabs button {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #666;
+  border-radius: 4px;
+  background: #3a3a3a;
+  color: #f2f2f2;
+  font: inherit;
+  cursor: pointer;
+}
+
+.tabs button[aria-selected="true"] { background: #e8e8e8; color: #202020; font-weight: 600; }
+
+.daten-zeile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  color: #b5b5b5;
+}
+
+.panel-kopieren {
+  padding: 0.25rem 0.7rem;
+  border: 1px solid #666;
+  border-radius: 4px;
+  background: #3a3a3a;
+  color: #f2f2f2;
+  font: inherit;
+  cursor: pointer;
+}
+
+.panel-kopieren:hover { background: #4a4a4a; }
+
+.daten-code {
+  margin: 0;
+  padding: 0.9rem;
+  overflow: auto;
+  max-height: calc(100vh - 14rem);
+  border: 1px solid #444;
+  border-radius: 4px;
+  background: #1b1b1b;
+  color: #dcdcdc;
+  font: 12px/1.5 ui-monospace, "Cascadia Code", Consolas, monospace;
+  white-space: pre;
+}
+
+.panel[hidden] { display: none; }
+.panel, .panel *, .panel *::before, .panel *::after { box-sizing: border-box; }
+
+.panel-kopf {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.panel h2 { margin: 0; font-size: 1.15rem; }
+.panel-unter { margin: 0.25rem 0 1rem; color: #b5b5b5; }
+
+.panel-zu {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid #666;
+  border-radius: 4px;
+  background: #3a3a3a;
+  color: #f2f2f2;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.panel :focus-visible { outline: 2px solid #8ab4f8; outline-offset: 2px; }
+
+.check-liste { margin: 0; padding: 0; list-style: none; }
+
+.check {
+  display: grid;
+  grid-template-columns: 1.75rem 1fr;
+  gap: 0.5rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid #444;
+}
+
+.check p { margin: 0.15rem 0 0; color: #c4c4c4; }
+.check-zeichen { font-size: 1.1rem; }
+
+.leiste-feld input[type="date"] { color-scheme: dark; }
+.leiste-feld button { cursor: pointer; }
+.leiste-feld button:hover { background: #4a4a4a; }
+
+/* Datum weicht vom echten Heute ab: auffällig markieren */
+.leiste-feld input.simuliert {
+  border-color: #f2b84b;
+  box-shadow: 0 0 0 1px #f2b84b;
+}
+
+#demo-leiste :focus-visible {
+  outline: 2px solid #8ab4f8;
+  outline-offset: 2px;
+}
+
+/* Weicher Übergang beim Wechsel von Studio oder Design */
+#buehne {
+  transition: opacity 0.15s ease;
+}
+
+#buehne.blendet {
+  opacity: 0;
+}
+
+/* Die feststehende Leiste verdeckt sonst die Überschrift beim Anspringen eines Abschnitts */
+.ansicht-desktop .website [id] {
+  scroll-margin-top: 3.5rem;
+}
+
+/* ---------- Ansicht: Desktop / Handy / Alle Studios ---------- */
+
+.ansicht-wahl {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.ansicht-wahl legend { float: left; padding: 0; margin-right: 0.5rem; }
+
+.ansicht-knoepfe { display: inline-flex; }
+
+.ansicht-knoepfe button {
+  min-height: 1.9rem;
+  padding: 0.2rem 0.7rem;
+  border: 1px solid #666;
+  background: #3a3a3a;
+  color: #f2f2f2;
+  font: inherit;
+  cursor: pointer;
+}
+
+.ansicht-knoepfe button + button { margin-left: -1px; }
+.ansicht-knoepfe button:first-child { border-radius: 4px 0 0 4px; }
+.ansicht-knoepfe button:last-child { border-radius: 0 4px 4px 0; }
+.ansicht-knoepfe button:hover { background: #4a4a4a; }
+.ansicht-knoepfe button[aria-pressed="true"] { background: #e8e8e8; color: #202020; font-weight: 600; }
+
+.leiste-feld select:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* Geräterahmen: in der Desktop-Ansicht unsichtbar */
+.geraet { display: block; }
+.geraet[hidden] { display: none; }
+
+.ansicht-handy .geraet,
+.ansicht-alle .geraet {
+  box-sizing: border-box;
+  width: 414px; /* 390 px Inhalt + Rahmen */
+  max-width: 100%;
+  padding: 10px;
+  border: 2px solid #5a5a5a;
+  border-radius: 42px;
+  background: #0b0b0b;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+.ansicht-handy .geraet { margin: 1.5rem auto; }
+
+.ansicht-handy .website,
+.ansicht-alle .website {
+  height: min(800px, calc(100vh - 9rem));
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: 30px;
+  scrollbar-width: none;
+}
+
+.ansicht-handy .website::-webkit-scrollbar,
+.ansicht-alle .website::-webkit-scrollbar { display: none; }
+
+#alle-studios {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2rem 2.5rem;
+  padding: 1.5rem 1rem 2.5rem;
+}
+
+#alle-studios[hidden] { display: none; }
+
+.spalte { margin: 0; }
+
+.spalte figcaption {
+  margin-top: 0.9rem;
+  color: #d8d8d8;
+  font: 13px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #buehne { transition: none; }
+}
