@@ -3,7 +3,11 @@
 // Neues Studio anlegen: JSON-Datei in data/ ablegen und die ID hier eintragen.
 
 import { esc, renderSeite, seitenAttribute } from './render.js';
-import { isoDatum, parseDatum } from './zeit.js';
+import {
+  isoDatum, parseDatum, tagPlusN, tageZwischen, aenderungen, zeitraumAllerStudios,
+} from './zeit.js';
+import { spurenHtml, tageImBereich } from './zeitstrahl.js';
+import { zeigeMeldungen } from './meldungen.js';
 import { erzeugeJsonLd, setzeJsonLd } from './jsonld.js';
 import { pruefe, STATUS_ZEICHEN } from './check.js';
 
@@ -50,6 +54,8 @@ function minutenJetzt() {
 // Simuliertes Datum: bestimmt Aktionen, Öffnungsstatus und Schließtage. Die Uhrzeit bleibt echt.
 let simuliertesDatum = echtesHeute();
 let ansicht = 'desktop';
+let gerendertesDatum = simuliertesDatum; // Datum der zuletzt gezeigten Seite (für die Meldungen)
+let strahlTimer = null; // läuft der Zeitraffer?
 let offenesPanel = null; // 'check' | 'daten' | null
 let datenTab = 'studio'; // 'studio' | 'jsonld'
 const datenTexte = { studio: '', jsonld: '' };
@@ -126,6 +132,14 @@ function baueLeiste() {
       <button type="button" class="leiste-knopf" id="wahl-daten" aria-expanded="false" aria-controls="panel-daten">
         Daten ansehen
       </button>
+      <div class="leiste-strahl">
+        <button type="button" class="leiste-knopf" id="strahl-play" aria-pressed="false">▶ Zeitraffer</button>
+        <div class="strahl">
+          <span class="strahl-spuren" id="strahl-spuren" aria-hidden="true"></span>
+          <input type="range" id="strahl-regler" min="0" max="0" step="1" value="0" aria-label="Datum auf dem Zeitstrahl">
+        </div>
+        <output class="strahl-datum" id="strahl-datum" for="strahl-regler"></output>
+      </div>
       </div>
     </div>
     <div class="leiste-hinweis" id="leiste-hinweis" role="note" hidden>
@@ -244,6 +258,64 @@ function zeigeInLeiste({ studio, theme }) {
   for (const knopf of leiste.querySelectorAll('[data-ansicht]')) {
     knopf.setAttribute('aria-pressed', String(knopf.dataset.ansicht === ansicht));
   }
+  aktualisiereStrahl(studio);
+}
+
+// ---------- Zeitstrahl ----------
+
+function strahlBereich() {
+  return zeitraumAllerStudios([...studios.values()], echtesHeute());
+}
+
+function aktualisiereStrahl(studio) {
+  const bereich = strahlBereich();
+  const sichtbar = ansicht === 'alle' ? [...studios.values()] : [studio];
+  const html = spurenHtml(sichtbar, bereich, echtesHeute());
+  const spuren = leiste.querySelector('#strahl-spuren');
+  if (spuren.dataset.html !== html) {
+    spuren.innerHTML = html;
+    spuren.dataset.html = html;
+    spuren.style.setProperty('--spuren', String(spuren.querySelectorAll('.strahl-spur').length));
+  }
+  const regler = leiste.querySelector('#strahl-regler');
+  const letzter = tageImBereich(bereich) - 1;
+  regler.max = String(letzter);
+  regler.value = String(Math.min(letzter, Math.max(0, tageZwischen(bereich.start, simuliertesDatum))));
+  regler.setAttribute('aria-valuetext', deDatum(simuliertesDatum));
+  leiste.querySelector('#strahl-datum').textContent = deDatum(simuliertesDatum);
+}
+
+function stoppeZeitraffer() {
+  if (!strahlTimer) return;
+  clearInterval(strahlTimer);
+  strahlTimer = null;
+  const knopf = leiste.querySelector('#strahl-play');
+  knopf.textContent = '▶ Zeitraffer';
+  knopf.setAttribute('aria-pressed', 'false');
+}
+
+function starteZeitraffer() {
+  const bereich = strahlBereich();
+  const tage = tageImBereich(bereich);
+  let i = tageZwischen(bereich.start, simuliertesDatum);
+  if (i >= tage - 1 || i < 0) i = 0;
+  const knopf = leiste.querySelector('#strahl-play');
+  knopf.textContent = '⏸ Stopp';
+  knopf.setAttribute('aria-pressed', 'true');
+  strahlTimer = setInterval(() => {
+    i += 1;
+    if (i >= tage) {
+      stoppeZeitraffer();
+      return;
+    }
+    setzeDatum(tagPlusN(bereich.start, i));
+  }, 70);
+}
+
+/** Setzt das simulierte Datum und zeigt die Seite ohne Ausblenden, nur mit Animation der Änderungen. */
+function setzeDatum(datum) {
+  simuliertesDatum = datum;
+  zeige('datum');
 }
 
 // ---------- Seite rendern ----------
@@ -256,6 +328,61 @@ function setzeAttribute(element, studio, theme) {
 
 let letzteSeite = null; // „ansicht/studio/ort“ – bei einem Wechsel springt die Seite nach oben
 let wechselNr = 0;
+
+const wurzeln = () => (ansicht === 'alle' ? [...alleStudios.querySelectorAll('.website')] : [website]);
+
+/** Merkt sich Aktionskarten und Status, damit nach dem Rendern nur die Unterschiede animiert werden. */
+function schnappschuss() {
+  return wurzeln().map((w) => ({
+    aktionen: [...w.querySelectorAll('.aktion[data-aktion]')].map((el) => ({ id: el.dataset.aktion, html: el.outerHTML })),
+    status: w.querySelector('.status')?.textContent,
+    hinweis: Boolean(w.querySelector('.schliess-hinweis')),
+  }));
+}
+
+/** Neue Karten gleiten ein, entfernte blenden als „Geister“ aus, geänderter Status blitzt kurz auf. */
+function animiere(vorher) {
+  wurzeln().forEach((w, i) => {
+    const v = vorher[i];
+    if (!v) return;
+    const alt = new Set(v.aktionen.map((a) => a.id));
+    const karten = [...w.querySelectorAll('.aktion[data-aktion]')];
+    const jetzt = new Set(karten.map((el) => el.dataset.aktion));
+    for (const el of karten) if (!alt.has(el.dataset.aktion)) el.classList.add('aktion-neu');
+    const entfernt = v.aktionen.filter((a) => !jetzt.has(a.id));
+    if (entfernt.length) {
+      const geister = entfernt.map((a) => {
+        const vorlage = document.createElement('template');
+        vorlage.innerHTML = a.html;
+        const geist = vorlage.content.firstElementChild;
+        geist.removeAttribute('data-aktion');
+        geist.setAttribute('aria-hidden', 'true');
+        geist.classList.remove('aktion-neu');
+        geist.classList.add('aktion-geht');
+        geist.addEventListener('animationend', () => geist.remove());
+        setTimeout(() => geist.remove(), 900); // Sicherheitsnetz, falls das Ereignis ausbleibt
+        return geist;
+      });
+      const raster = w.querySelector('.raster-aktionen');
+      if (raster) {
+        raster.prepend(...geister);
+      } else {
+        // Der ganze Aktionen-Block verschwindet: für die Animation kurz als Geister-Abschnitt zeigen
+        const abschnitt = document.createElement('section');
+        abschnitt.className = 'sektion aktionen-geist';
+        abschnitt.setAttribute('aria-hidden', 'true');
+        abschnitt.innerHTML = '<div class="inhalt"><div class="raster raster-aktionen"></div></div>';
+        abschnitt.querySelector('.raster').append(...geister);
+        w.querySelector('.hero')?.after(abschnitt);
+        setTimeout(() => abschnitt.remove(), 900);
+      }
+    }
+    const status = w.querySelector('.status');
+    if (status && v.status && status.textContent !== v.status) status.classList.add('status-neu');
+    const hinweis = w.querySelector('.schliess-hinweis');
+    if (hinweis && !v.hinweis) hinweis.classList.add('aktion-neu');
+  });
+}
 
 function rendern({ studio, theme, ort }) {
   const optionen = { heute: simuliertesDatum, minuten: minutenJetzt() };
@@ -296,9 +423,14 @@ function rendern({ studio, theme, ort }) {
     website.scrollTop = 0;
   }
   letzteSeite = seite;
+  gerendertesDatum = simuliertesDatum;
 }
 
-async function zeige() {
+/**
+ * @param {'seite'|'datum'} art  „seite“: Studio, Design oder Ansicht wechseln (weich ein- und ausblenden).
+ *   „datum“: nur das Datum ändert sich, die Seite bleibt stehen und zeigt, was sich ändert.
+ */
+async function zeige(art = 'seite') {
   const nr = ++wechselNr;
   const zustand = leseHash();
   const { studio, theme, ort } = zustand;
@@ -309,6 +441,18 @@ async function zeige() {
   zeigeInLeiste(zustand);
 
   const ruhig = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (art === 'datum' && letzteSeite !== null) {
+    const vorher = schnappschuss();
+    const sichtbar = ansicht === 'alle' ? [...studios.values()] : [studio];
+    const meldungen = sichtbar.flatMap((s) => aenderungen(s, gerendertesDatum, simuliertesDatum)
+      .map((m) => (ansicht === 'alle' ? { ...m, text: `${s.name}: ${m.text}` } : m)));
+    rendern(zustand);
+    if (!ruhig) animiere(vorher);
+    zeigeMeldungen(meldungen);
+    return;
+  }
+
   if (letzteSeite === null || ruhig) {
     rendern(zustand);
     return;
@@ -327,8 +471,8 @@ async function zeige() {
 leiste.addEventListener('change', (ereignis) => {
   if (ereignis.target.id === 'wahl-datum') {
     if (!ereignis.target.value) return; // Feld geleert: altes Datum behalten
-    simuliertesDatum = parseDatum(ereignis.target.value);
-    zeige();
+    stoppeZeitraffer();
+    setzeDatum(parseDatum(ereignis.target.value));
     return;
   }
   // Studio und Design wechseln unabhängig voneinander; der Hash ist der einzige Zustand der Auswahl.
@@ -339,6 +483,13 @@ leiste.addEventListener('change', (ereignis) => {
     leiste.querySelector('#wahl-theme').value,
     leseHash().ort?.slug,
   );
+});
+
+// Regler: während des Ziehens laufend aktualisieren
+leiste.addEventListener('input', (ereignis) => {
+  if (ereignis.target.id !== 'strahl-regler') return;
+  stoppeZeitraffer();
+  setzeDatum(tagPlusN(strahlBereich().start, Number(ereignis.target.value)));
 });
 
 leiste.addEventListener('click', (ereignis) => {
@@ -359,8 +510,11 @@ leiste.addEventListener('click', (ereignis) => {
     ansicht = ansichtKnopf.dataset.ansicht;
     zeige();
   } else if (ereignis.target.closest('#wahl-heute')) {
-    simuliertesDatum = echtesHeute();
-    zeige();
+    stoppeZeitraffer();
+    setzeDatum(echtesHeute());
+  } else if (ereignis.target.closest('#strahl-play')) {
+    if (strahlTimer) stoppeZeitraffer();
+    else starteZeitraffer();
   } else if (ereignis.target.closest('#wahl-check')) {
     schaltePanel('check');
   } else if (ereignis.target.closest('#wahl-daten')) {
@@ -428,7 +582,7 @@ async function start() {
     studios.set(studio.id, studio);
   }
   baueLeiste();
-  window.addEventListener('hashchange', zeige);
+  window.addEventListener('hashchange', () => zeige());
   await zeige();
 }
 

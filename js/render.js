@@ -127,7 +127,7 @@ function aktionenBlock(aktionen, heute) {
         ${aktionen.map((a) => {
           const bis = parseDatum(a.gueltigBis);
           return `
-        <article class="karte aktion">
+        <article class="karte aktion" data-aktion="${esc(a.titel)}">
           <h3>${esc(a.titel)}</h3>
           <p>${esc(a.text)}</p>
           <p class="hinweis"><strong>${nochText(tageZwischen(heute, bis))}</strong> · gültig bis ${kurzDatum(bis)}</p>

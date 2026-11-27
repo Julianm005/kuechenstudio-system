@@ -106,3 +106,76 @@ export function schliessHinweis(studio, datum) {
   if (!bald) return null;
   return `Bitte beachten: ${bald.grund} vom ${kurzDatum(parseDatum(bald.von))} bis ${kurzDatum(parseDatum(bald.bis))}`;
 }
+
+// ---------- Änderungen zwischen zwei Daten (für die Meldungen der Demo) ----------
+
+/** Ist die Aktion an diesem Datum gültig? */
+export function aktionSichtbar(aktion, datum) {
+  return parseDatum(aktion.gueltigAb) <= datum && datum <= parseDatum(aktion.gueltigBis);
+}
+
+/**
+ * Was ändert sich auf der Website, wenn das Datum von „von“ auf „nach“ springt?
+ * Richtungsneutral formuliert, damit es beim Zurückspulen genauso stimmt.
+ * @returns {{icon: string, text: string}[]}
+ */
+export function aenderungen(studio, von, nach) {
+  if (isoDatum(von) === isoDatum(nach)) return [];
+  const liste = [];
+  for (const a of studio.aktionen) {
+    const war = aktionSichtbar(a, von);
+    const ist = aktionSichtbar(a, nach);
+    if (war === ist) continue;
+    if (war && !ist) {
+      liste.push({
+        icon: '⚙️',
+        text: parseDatum(a.gueltigBis) < nach
+          ? `„${a.titel}“ ist abgelaufen und wurde automatisch ausgeblendet.`
+          : `„${a.titel}“ ist noch nicht gültig und wurde ausgeblendet.`,
+      });
+    } else {
+      liste.push({
+        icon: '✨',
+        text: parseDatum(a.gueltigAb) > von
+          ? `„${a.titel}“ startet und erscheint automatisch.`
+          : `„${a.titel}“ ist wieder gültig und erscheint.`,
+      });
+    }
+  }
+  const pauseVor = schliessung(studio, von);
+  const pauseNach = schliessung(studio, nach);
+  if (!pauseVor && pauseNach) {
+    liste.push({
+      icon: '🔒',
+      text: `${pauseNach.grund} bis ${kurzDatum(parseDatum(pauseNach.bis))}: Der Status wechselt auf „Heute geschlossen“.`,
+    });
+  } else if (pauseVor && !pauseNach) {
+    liste.push({
+      icon: '🔓',
+      text: `${pauseVor.grund} vorbei: Der Status folgt wieder den normalen Öffnungszeiten.`,
+    });
+  } else if (!pauseNach && !schliessHinweis(studio, von) && schliessHinweis(studio, nach)) {
+    liste.push({ icon: '📢', text: 'Ein Hinweis auf kommende Schließtage erscheint automatisch (30 Tage vorher).' });
+  }
+  return liste;
+}
+
+/**
+ * Datumsbereich für den Zeitstrahl: alle Aktionen und Schließzeiten aller Studios plus Puffer,
+ * dazu immer das heutige Datum.
+ */
+export function zeitraumAllerStudios(studioListe, heute) {
+  let start = heute;
+  let ende = heute;
+  for (const s of studioListe) {
+    for (const a of s.aktionen) {
+      if (parseDatum(a.gueltigAb) < start) start = parseDatum(a.gueltigAb);
+      if (parseDatum(a.gueltigBis) > ende) ende = parseDatum(a.gueltigBis);
+    }
+    for (const p of s.schliesstage) {
+      if (parseDatum(p.von) < start) start = parseDatum(p.von);
+      if (parseDatum(p.bis) > ende) ende = parseDatum(p.bis);
+    }
+  }
+  return { start: tagPlusN(start, -21), ende: tagPlusN(ende, 21) };
+}
