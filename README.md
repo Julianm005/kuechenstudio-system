@@ -121,7 +121,7 @@ js/check.js           Qualitäts-Check
   | Desktop | 100 | 100 | 100 | 100 |
 
   <!-- TODO: Lighthouse-Screenshot ergänzen -->
-- Bei der ersten Messung lag der Desktop-Wert bei 97, weil die per Skript eingefügte Demo-Leiste die Seite verschob (Layout-Versatz 0,101). Der Hinweis liegt jetzt als Overlay über der Seite und die Leiste reserviert ihre Höhe: 0,025.
+- Bei der ersten Messung lag der Desktop-Wert bei 97, weil die per Skript eingefügte Demo-Leiste die Seite verschob (Layout-Versatz 0,101). Mit einem Overlay-Hinweis und reservierter Leistenhöhe sank er auf 0,025. Seit der Hinweis fester Teil der Leiste ist und die Seite nach unten schiebt (statt sie zu überdecken), liegt er bei 0,058, also weiter im grünen Bereich (unter 0,1).
 
 ## Wie dieses Projekt entstanden ist
 
