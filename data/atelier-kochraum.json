@@ -75,6 +75,11 @@
     { "name": "Paul Escher", "rolle": "Lichtplanung", "seit": 2019 },
     { "name": "Mia Kaiser", "rolle": "Kundenbetreuung", "seit": 2022 }
   ],
+  "stimmen": [
+    { "text": "Das Lichtkonzept hat unsere Küche verwandelt. Man merkt, dass hier gestaltet statt verkauft wird.", "name": "Dr. M. Vogel", "ort": "Dresden", "sterne": 5 },
+    { "text": "Termin, Planung, Montage: Alles lief auf den Tag genau. Die Fronten sind makellos.", "name": "P. und J. Hartmann", "ort": "Pirna", "sterne": 5 },
+    { "text": "Sehr persönliche Beratung, und das Budget wurde ernst genommen.", "name": "Katrin S.", "ort": "Freital", "sterne": 4 }
+  ],
   "aktionen": [
     {
       "titel": "Showroom-Abend: Licht & Küche",

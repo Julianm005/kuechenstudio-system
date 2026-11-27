@@ -76,6 +76,11 @@
     { "name": "Mareike Hoffmann", "rolle": "Planung & Innenarchitektur", "seit": 2020 },
     { "name": "Jens Kunze", "rolle": "Montageleiter", "seit": 2012 }
   ],
+  "stimmen": [
+    { "text": "Die Planung war vom ersten Gespräch an klar und ehrlich. Der Preis stimmte am Ende genau mit dem Angebot überein.", "name": "Familie K.", "ort": "Coswig", "sterne": 5 },
+    { "text": "Montage in zwei Tagen, sauber und pünktlich. Auch nach einem Jahr kümmert sich das Team sofort um Kleinigkeiten.", "name": "Thomas R.", "ort": "Radebeul", "sterne": 5 },
+    { "text": "Gute Beratung bei den Geräten. Nur die Lieferung der Arbeitsplatte hat eine Woche länger gedauert.", "name": "Anja M.", "ort": "Meißen", "sterne": 4 }
+  ],
   "aktionen": [
     {
       "titel": "Herbst-Aktion: 10 % auf Elektrogeräte",

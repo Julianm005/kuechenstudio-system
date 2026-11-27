@@ -5,6 +5,7 @@ import { kuechenSVG } from './kitchen-art.js';
 import {
   TAG_SCHLUESSEL, parseDatum, tageZwischen, kurzDatum, oeffnungsStatus, schliessHinweis, schliessung,
 } from './zeit.js';
+import { terminAuswahl, ersterTerminTag, fruehesterTag, isoDatum } from './termin.js';
 
 // Präfix für alle IDs im erzeugten HTML. Damit mehrere Studios gleichzeitig auf einer Seite stehen
 // können („Alle Studios“), ohne dass IDs doppelt vorkommen. Wird in renderSeite gesetzt.
@@ -73,6 +74,7 @@ function kopf(studio, route, aktionen, tel, status) {
     ['kuechen', 'Küchen'],
     ...(aktionen.length ? [['aktionen', 'Aktionen']] : []),
     ['team', 'Team'],
+    ['termin', 'Termin'],
     ['besuch', 'Besuch'],
   ];
   return `
@@ -217,6 +219,69 @@ function team(studio) {
   </section>`;
 }
 
+/** Kundenstimmen: reine Beispieltexte für die Demo, bewusst nicht Teil der schema.org-Daten. */
+function stimmen(studio) {
+  if (!studio.stimmen?.length) return '';
+  return `
+  <section class="sektion sektion-flaeche" aria-labelledby="${idp}stimmen-titel">
+    <div class="inhalt">
+      <h2 id="${idp}stimmen-titel">Das sagen unsere Kundinnen und Kunden</h2>
+      <ul class="raster raster-stimmen">
+        ${studio.stimmen.map((st) => `
+        <li class="karte stimme">
+          <p class="sterne" role="img" aria-label="${esc(st.sterne)} von 5 Sternen">${'★'.repeat(st.sterne)}${'☆'.repeat(5 - st.sterne)}</p>
+          <blockquote><p>${esc(st.text)}</p></blockquote>
+          <p class="stimme-name">${esc(st.name)}, ${esc(st.ort)}</p>
+        </li>`).join('')}
+      </ul>
+      <p class="klein-hinweis">Erfundene Beispielstimmen für die Demo.</p>
+    </div>
+  </section>`;
+}
+
+const PROJEKTE = ['Neue Küche komplett', 'Küche renovieren (Fronten, Arbeitsplatte)', 'Elektrogeräte tauschen', 'Noch unklar'];
+const ZEITRAEUME = ['In den nächsten 3 Monaten', 'In 3 bis 6 Monaten', 'Später', 'Weiß ich noch nicht'];
+const BERATUNGEN = ['Im Studio', 'Telefonisch', 'Bei mir zu Hause (Aufmaß)'];
+
+/** Terminanfrage: nur Demo. Die Uhrzeiten folgen den Öffnungszeiten, Schließtage sind gesperrt. */
+function termin(studio, heute) {
+  const erster = ersterTerminTag(studio, heute);
+  const auswahl = erster ? terminAuswahl(studio, erster, heute) : { slots: [], hinweis: 'Zurzeit sind keine Termine möglich.' };
+  const optionen = (liste) => liste.map((o) => `<option>${esc(o)}</option>`).join('');
+  return `
+  <section class="sektion" id="${idp}termin" tabindex="-1" aria-labelledby="${idp}termin-titel">
+    <div class="inhalt inhalt-schmal">
+      <h2 id="${idp}termin-titel">Beratungstermin anfragen</h2>
+      <p class="hero-lead">Drei kurze Fragen, damit wir uns vor dem Termin schon Zeit für Ihr Projekt nehmen.</p>
+      <form class="termin-formular karte" data-studio="${esc(studio.id)}" data-heute="${isoDatum(heute)}">
+        <div class="termin-raster">
+          <label class="termin-feld"><span>Was planen Sie?</span><select name="projekt">${optionen(PROJEKTE)}</select></label>
+          <label class="termin-feld"><span>Wann soll die Küche stehen?</span><select name="zeitraum">${optionen(ZEITRAEUME)}</select></label>
+          <label class="termin-feld"><span>Wie möchten Sie beraten werden?</span><select name="beratung">${optionen(BERATUNGEN)}</select></label>
+          <label class="termin-feld"><span>Wunschtag</span>
+            <input type="date" name="tag" class="termin-datum" required min="${isoDatum(fruehesterTag(heute))}" value="${erster ? isoDatum(erster) : ''}"></label>
+          <label class="termin-feld"><span>Uhrzeit</span>
+            <select name="zeit" class="termin-zeit" required>${optionen(auswahl.slots.map((z) => `${z} Uhr`))}</select></label>
+          <label class="termin-feld"><span>Ihr Name</span><input type="text" name="name" required autocomplete="off"></label>
+        </div>
+        <p class="termin-hinweis" role="status" aria-live="polite">${esc(auswahl.hinweis)}</p>
+        <button class="btn" type="submit">Termin anfragen</button>
+        <p class="klein-hinweis">Demo: Es wird nichts gesendet oder gespeichert.</p>
+      </form>
+    </div>
+  </section>`;
+}
+
+/** Feste Schnellzugriffe am unteren Rand, nur in schmalen Containern (Handy). */
+function mobilleiste(tel) {
+  return `
+  <nav class="mobilleiste" aria-label="Schnellzugriff">
+    <a class="btn" href="${tel}">Anrufen</a>
+    <a class="btn btn-zweit" href="#" data-scroll="${idp}termin">Termin</a>
+    <a class="btn btn-zweit" href="#" data-scroll="${idp}besuch">Besuch</a>
+  </nav>`;
+}
+
 function besuch(studio, heute, tel) {
   const k = studio.kontakt;
   const heuteSchluessel = TAG_SCHLUESSEL[heute.getDay()];
@@ -321,9 +386,12 @@ export function renderSeite(studio, { theme, heute, minuten, ort = null }) {
     galerie(studio),
     marken(studio),
     team(studio),
+    stimmen(studio),
+    termin(studio, heute),
     besuch(studio, heute, tel),
     faq(studio),
     nachbarorte(studio, theme, ort),
     fuss(studio, tel),
+    mobilleiste(tel),
   ].join('');
 }

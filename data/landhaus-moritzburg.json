@@ -75,6 +75,11 @@
     { "name": "Frank Brandt", "rolle": "Tischlermeister & Montage", "seit": 2009 },
     { "name": "Lena Schulz", "rolle": "Küchenberaterin", "seit": 2021 }
   ],
+  "stimmen": [
+    { "text": "Endlich eine Küche, die zu unserem alten Haus passt. Der Tischlermeister hat jede Schräge ausgemessen.", "name": "Familie B.", "ort": "Moritzburg", "sterne": 5 },
+    { "text": "Wir durften uns in der Ausstellung viel Zeit nehmen, niemand hat gedrängt.", "name": "Sabine L.", "ort": "Coswig", "sterne": 5 },
+    { "text": "Die Insel in Eiche ist das Herzstück unseres Hauses geworden.", "name": "Henning W.", "ort": "Radebeul", "sterne": 5 }
+  ],
   "aktionen": [
     {
       "titel": "Küchenneuheiten 2025 zum Vorteilspreis",

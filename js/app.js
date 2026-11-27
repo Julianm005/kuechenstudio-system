@@ -9,6 +9,7 @@ import {
 import { spurenHtml, tageImBereich } from './zeitstrahl.js';
 import { zeigeMeldungen } from './meldungen.js';
 import { sucheVorschauHtml } from './suche.js';
+import { terminAuswahl, langesDatum } from './termin.js';
 import { erzeugeJsonLd, setzeJsonLd } from './jsonld.js';
 import { pruefe, STATUS_ZEICHEN } from './check.js';
 import {
@@ -756,6 +757,52 @@ buehne.addEventListener('click', (ereignis) => {
   }
   // „Alle Studios“ ist eine reine Vorschau: Links auf andere Seiten sind dort ohne Wirkung
   if (ansicht === 'alle' && ereignis.target.closest('a[href^="#/"]')) ereignis.preventDefault();
+});
+
+// ---------- Terminanfrage (nur Demo) ----------
+
+// Wunschtag geändert: passende Uhrzeiten und Hinweise (Ruhetag, Betriebsferien) neu berechnen
+buehne.addEventListener('change', (ereignis) => {
+  const datumFeld = ereignis.target.closest('.termin-datum');
+  if (!datumFeld) return;
+  const formular = datumFeld.closest('form');
+  const studio = studios.get(formular.dataset.studio);
+  const zeitFeld = formular.querySelector('.termin-zeit');
+  const hinweis = formular.querySelector('.termin-hinweis');
+  if (!datumFeld.value) {
+    zeitFeld.innerHTML = '';
+    hinweis.textContent = 'Bitte einen Wunschtag wählen.';
+    return;
+  }
+  const auswahl = terminAuswahl(studio, parseDatum(datumFeld.value), parseDatum(formular.dataset.heute));
+  zeitFeld.innerHTML = auswahl.slots.map((z) => `<option>${esc(z)} Uhr</option>`).join('');
+  hinweis.textContent = auswahl.hinweis;
+});
+
+// Abschicken: es wird nichts gesendet, die Bestätigung zeigt nur den Ablauf
+buehne.addEventListener('submit', (ereignis) => {
+  const formular = ereignis.target.closest('.termin-formular');
+  if (!formular) return;
+  ereignis.preventDefault();
+  const daten = new FormData(formular);
+  formular.innerHTML = `
+    <div class="termin-danke" role="status" tabindex="-1">
+      <h3>Vielen Dank, ${esc(daten.get('name'))}!</h3>
+      <p>Ihre Anfrage für <strong>${esc(langesDatum(daten.get('tag')))}, ${esc(daten.get('zeit'))}</strong>
+        wäre jetzt bei uns eingegangen. Sie würden eine Bestätigung per E-Mail erhalten.</p>
+      <ul class="termin-zusammenfassung">
+        <li>Beratung: ${esc(daten.get('beratung'))}</li>
+        <li>Thema: ${esc(daten.get('projekt'))}</li>
+        <li>Küche gewünscht: ${esc(daten.get('zeitraum'))}</li>
+      </ul>
+      <p class="klein-hinweis">Demo: Es wurde nichts gesendet oder gespeichert.</p>
+      <button type="button" class="btn btn-zweit" data-termin-neu>Neue Anfrage</button>
+    </div>`;
+  formular.querySelector('.termin-danke').focus();
+});
+
+buehne.addEventListener('click', (ereignis) => {
+  if (ereignis.target.closest('[data-termin-neu]')) zeige('datum');
 });
 
 async function start() {

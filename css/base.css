@@ -449,3 +449,60 @@
 @media (prefers-reduced-motion: reduce) {
   .website * { transition: none !important; animation: none !important; }
 }
+
+/* ---------- Kundenstimmen ---------- */
+
+.raster-stimmen { grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+.stimme blockquote { margin: 0 0 0.75rem; }
+.stimme blockquote p { margin: 0; }
+.stimme .sterne { margin: 0 0 0.5rem; color: var(--accent); font-size: 1.1rem; letter-spacing: 0.1em; }
+.stimme-name { color: var(--muted); font-size: 0.9rem; font-weight: 600; }
+
+.klein-hinweis { margin: 0.75rem 0 0; color: var(--muted); font-size: 0.85rem; }
+
+/* ---------- Terminanfrage ---------- */
+
+.termin-raster { display: grid; gap: 0.9rem; margin-bottom: 1rem; }
+
+@container (min-width: 36rem) {
+  .termin-raster { grid-template-columns: 1fr 1fr; }
+}
+
+.termin-feld { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.termin-feld > span { font-size: 0.9rem; font-weight: 600; }
+
+.termin-feld select,
+.termin-feld input {
+  min-height: 2.75rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  min-width: 0;
+}
+
+.website .termin-hinweis { min-height: 1.5em; margin: 0 0 0.75rem; color: var(--muted); }
+.termin-danke h3 { margin-top: 0; }
+.termin-danke:focus { outline: none; }
+
+/* ---------- Schnellzugriff am Handy ---------- */
+
+.mobilleiste { display: none; }
+
+@container (max-width: 40rem) {
+  .mobilleiste {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+  }
+
+  .mobilleiste .btn { min-height: 2.75rem; padding: 0.4em 0.5em; font-size: 0.95rem; }
+}
