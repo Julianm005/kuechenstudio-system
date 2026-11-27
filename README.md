@@ -113,11 +113,11 @@ js/check.js           Qualitäts-Check
 
 - Semantisches HTML, Alt-Texte für alle Küchenbilder, Tastaturbedienung, sichtbare Fokusrahmen, `prefers-reduced-motion` wird respektiert.
 - Kontraste der Website wurden für alle 3 × 3 Studio-Design-Kombinationen per Skript geprüft (mindestens AA).
-- Lighthouse (gemessen mit PageSpeed Insights auf der Live-Seite, 27.11.2026, Lighthouse 13.6):
+- Lighthouse (gemessen mit PageSpeed Insights auf der Live-Seite, 27.11.2026, Lighthouse 13.6, nach Ergänzung von Zeitstrahl, Editor und Terminformular):
 
   | | Performance | Accessibility | Best Practices | SEO |
   |---|---|---|---|---|
-  | Mobil | 100 | 100 | 100 | 100 |
+  | Mobil | 99 | 100 | 100 | 100 |
   | Desktop | 100 | 100 | 100 | 100 |
 
   <!-- TODO: Lighthouse-Screenshot ergänzen -->
