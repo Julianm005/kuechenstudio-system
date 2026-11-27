@@ -5,6 +5,7 @@
    Responsiv wird über Container Queries gesteuert (.website ist der Container). */
 
 .website {
+  color-scheme: light; /* Auswahllisten, Datumsfelder und Scrollleisten folgen dem Theme (Atelier: dunkel) */
   container-type: inline-size;
   background: var(--bg);
   color: var(--text);
@@ -484,6 +485,32 @@
   color: var(--text);
   font: inherit;
   min-width: 0;
+}
+
+/* Auswahlfelder: eigener Pfeil statt des grauen Standard-Blocks des Browsers. Der Pfeil nimmt die
+   Textfarbe des Themes (currentColor), ganz ohne Bilddatei. */
+.termin-feld select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 2.5rem;
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 1.3rem) 52%, calc(100% - 0.95rem) 52%;
+  background-size: 0.38rem 0.38rem, 0.38rem 0.38rem;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.termin-feld option { background: var(--surface); color: var(--text); }
+
+/* Formularfelder: ruhigerer Fokusring als der große Ring für Links und Knöpfe */
+.website .termin-feld select:focus-visible,
+.website .termin-feld input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: var(--accent);
 }
 
 .website .termin-hinweis { min-height: 1.5em; margin: 0 0 0.75rem; color: var(--muted); }
