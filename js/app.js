@@ -125,8 +125,23 @@ function baueLeiste() {
     <div class="leiste-innen">
       <span class="leiste-marke">Demo</span>
       <button type="button" class="leiste-knopf leiste-menue" id="leiste-menue" aria-expanded="false" aria-controls="leiste-felder">Steuerung</button>
+    <div class="leiste-gruppe leiste-gruppe-zeit" role="group" aria-label="Zeit">
+      <span class="leiste-gruppe-titel" aria-hidden="true">Zeit</span>
+      <label class="leiste-feld" for="wahl-datum">Datum</label>
+      <input type="date" id="wahl-datum" title="Datum simulieren" required>
+      <button type="button" class="leiste-knopf" id="wahl-heute">Heute</button>
+      <button type="button" class="leiste-knopf leiste-knopf-haupt" id="strahl-play" aria-pressed="false">▶ Zeitraffer</button>
+      <div class="leiste-strahl">
+        <div class="strahl">
+          <span class="strahl-spuren" id="strahl-spuren" aria-hidden="true"></span>
+          <input type="range" id="strahl-regler" min="0" max="0" step="1" value="0" aria-label="Datum auf dem Zeitstrahl">
+        </div>
+        <output class="strahl-datum" id="strahl-datum" for="strahl-regler"></output>
+      </div>
+      <output class="strahl-naechste" id="strahl-naechste" aria-live="off"></output>
+    </div>
       <div class="leiste-felder" id="leiste-felder" role="group" aria-label="Demo-Steuerung">
-      <div class="leiste-gruppe" role="group" aria-label="Auswahl">
+      <div class="leiste-gruppe leiste-gruppe-auswahl" role="group" aria-label="Auswahl">
         <span class="leiste-gruppe-titel" aria-hidden="true">Auswahl</span>
         <label class="leiste-feld">Studio
           <select id="wahl-studio">${studioOptionen()}</select>
@@ -143,22 +158,7 @@ function baueLeiste() {
         </fieldset>
         <button type="button" class="leiste-knopf" id="wahl-typisch" aria-pressed="false">Vergleich: typische Website</button>
       </div>
-      <div class="leiste-gruppe leiste-gruppe-zeit" role="group" aria-label="Zeit">
-        <span class="leiste-gruppe-titel" aria-hidden="true">Zeit</span>
-        <label class="leiste-feld" for="wahl-datum">Datum</label>
-        <input type="date" id="wahl-datum" title="Datum simulieren" required>
-        <button type="button" class="leiste-knopf" id="wahl-heute">Heute</button>
-        <button type="button" class="leiste-knopf leiste-knopf-haupt" id="strahl-play" aria-pressed="false">▶ Zeitraffer</button>
-        <div class="leiste-strahl">
-          <div class="strahl">
-            <span class="strahl-spuren" id="strahl-spuren" aria-hidden="true"></span>
-            <input type="range" id="strahl-regler" min="0" max="0" step="1" value="0" aria-label="Datum auf dem Zeitstrahl">
-          </div>
-          <output class="strahl-datum" id="strahl-datum" for="strahl-regler"></output>
-        </div>
-        <output class="strahl-naechste" id="strahl-naechste" aria-live="off"></output>
-      </div>
-      <div class="leiste-gruppe" role="group" aria-label="Werkzeuge">
+      <div class="leiste-gruppe leiste-gruppe-werkzeuge" role="group" aria-label="Werkzeuge">
         <span class="leiste-gruppe-titel" aria-hidden="true">Werkzeuge</span>
         <button type="button" class="leiste-knopf" id="wahl-check" aria-expanded="false" aria-controls="panel-check">
           Qualitäts-Check <span class="badge" id="check-badge"></span>

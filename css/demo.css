@@ -74,9 +74,36 @@ body {
     width: 100%;
   }
 
-  .leiste-felder.offen { display: flex; }
+  .leiste-felder.offen { display: flex; order: 2; }
 
   .leiste-hinweis { flex-direction: column; align-items: flex-start; }
+
+  /* Die Zeitsteuerung bleibt sichtbar, Auswahl und Werkzeuge klappen hinter „Steuerung“ */
+  .leiste-gruppe-zeit {
+    order: 1;
+    flex: 1 1 100%;
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .leiste-gruppe-zeit .leiste-gruppe-titel { display: none; }
+  .leiste-gruppe-zeit > label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .strahl-naechste {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-wrap: nowrap;
+  }
+
+  .leiste-gruppe + .leiste-gruppe { padding-left: 0; border-left: 0; }
 }
 
 .leiste-marke {
@@ -134,7 +161,9 @@ body {
   border-left: 1px solid #444;
 }
 
-.leiste-gruppe-zeit { flex: 1 1 26rem; }
+.leiste-gruppe-auswahl { order: 1; }
+.leiste-gruppe-zeit { order: 2; flex: 1 1 26rem; }
+.leiste-gruppe-werkzeuge { order: 3; }
 
 .leiste-gruppe-titel {
   color: #b8b8b8;
