@@ -77,33 +77,6 @@ body {
   .leiste-felder.offen { display: flex; order: 2; }
 
   .leiste-hinweis { flex-direction: column; align-items: flex-start; }
-
-  /* Die Zeitsteuerung bleibt sichtbar, Auswahl und Werkzeuge klappen hinter „Steuerung“ */
-  .leiste-gruppe-zeit {
-    order: 1;
-    flex: 1 1 100%;
-    padding-left: 0;
-    border-left: 0;
-  }
-
-  .leiste-gruppe-zeit .leiste-gruppe-titel { display: none; }
-  .leiste-gruppe-zeit > label {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-
-  .strahl-naechste {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    text-wrap: nowrap;
-  }
-
-  .leiste-gruppe + .leiste-gruppe { padding-left: 0; border-left: 0; }
 }
 
 .leiste-marke {
@@ -156,14 +129,9 @@ body {
   gap: 0.4rem 0.5rem;
 }
 
-.leiste-gruppe + .leiste-gruppe {
-  padding-left: 0.75rem;
-  border-left: 1px solid #444;
-}
-
 .leiste-gruppe-auswahl { order: 1; }
-.leiste-gruppe-zeit { order: 2; flex: 1 1 26rem; }
-.leiste-gruppe-werkzeuge { order: 3; }
+.leiste-gruppe-werkzeuge { order: 2; }
+.leiste-gruppe-zeit { order: 3; flex: 1 1 100%; }
 
 .leiste-gruppe-titel {
   color: #b8b8b8;
@@ -827,4 +795,26 @@ body {
   .ansicht-knoepfe button,
   .leiste-hinweis button,
   .panel-zu { min-width: 2.75rem; min-height: 2.75rem; }
+}
+
+/* Handy: Die Zeitsteuerung bleibt sichtbar, Auswahl und Werkzeuge klappen hinter „Steuerung“ */
+@media (max-width: 720px) {
+  .leiste-gruppe-zeit { order: 1; min-width: 0; }
+
+  .leiste-gruppe-zeit .leiste-gruppe-titel { display: none; }
+  .leiste-gruppe-zeit > label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .strahl-naechste {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
