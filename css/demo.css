@@ -74,7 +74,7 @@ body {
     width: 100%;
   }
 
-  .leiste-felder.offen { display: flex; order: 2; }
+  .leiste-felder.offen { display: flex; order: 8; }
 
   .leiste-hinweis { flex-direction: column; align-items: flex-start; }
 }
@@ -797,10 +797,11 @@ body {
   .panel-zu { min-width: 2.75rem; min-height: 2.75rem; }
 }
 
-/* Handy: Die Zeitsteuerung bleibt sichtbar, Auswahl und Werkzeuge klappen hinter „Steuerung“ */
+/* Handy: Die Zeitsteuerung bleibt sichtbar, Auswahl und Werkzeuge klappen hinter „Steuerung“.
+   Die Zeit-Gruppe löst sich auf, ihre Elemente sortieren sich in drei Zeilen:
+   Demo · Heute · Zeitraffer · Steuerung / Datum · Regler / Nächste Änderung */
 @media (max-width: 720px) {
-  .leiste-gruppe-zeit { order: 1; min-width: 0; }
-
+  .leiste-gruppe-zeit { display: contents; }
   .leiste-gruppe-zeit .leiste-gruppe-titel { display: none; }
   .leiste-gruppe-zeit > label {
     position: absolute;
@@ -811,10 +812,23 @@ body {
     white-space: nowrap;
   }
 
+  .leiste-marke { order: 1; }
+  #wahl-heute { order: 2; }
+  #strahl-play { order: 3; }
+  .leiste-knopf.leiste-menue { order: 4; }
+  #wahl-datum { order: 5; }
+  .leiste-strahl { order: 6; flex: 1 1 8rem; width: auto; min-width: 0; }
+  .strahl-datum { display: none; }
   .strahl-naechste {
+    order: 7;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+}
+
+/* Sehr schmale Handys: Die Marke „Demo“ weicht, damit Heute, Zeitraffer und Steuerung in eine Zeile passen */
+@media (max-width: 360px) {
+  .leiste-marke { display: none; }
 }
