@@ -126,44 +126,51 @@ function baueLeiste() {
       <span class="leiste-marke">Demo</span>
       <button type="button" class="leiste-knopf leiste-menue" id="leiste-menue" aria-expanded="false" aria-controls="leiste-felder">Steuerung</button>
       <div class="leiste-felder" id="leiste-felder" role="group" aria-label="Demo-Steuerung">
-      <label class="leiste-feld">Studio
-        <select id="wahl-studio">${studioOptionen()}</select>
-      </label>
-      <label class="leiste-feld">Design
-        <select id="wahl-theme">${optionen(Object.entries(THEMES))}</select>
-      </label>
-      <span class="leiste-feld">
-        <label class="leiste-feld" for="wahl-datum" title="Datum simulieren">Datum</label>
-        <input type="date" id="wahl-datum" required>
-        <button type="button" id="wahl-heute">Heute</button>
-      </span>
-      <fieldset class="ansicht-wahl">
-        <legend>Ansicht</legend>
-        <span class="ansicht-knoepfe">
-          ${Object.entries(ANSICHTEN).map(([schluessel, text]) =>
-            `<button type="button" data-ansicht="${schluessel}" aria-pressed="false">${text}</button>`).join('')}
-        </span>
-      </fieldset>
-      <button type="button" class="leiste-knopf" id="wahl-typisch" aria-pressed="false">Typische Website</button>
-      <button type="button" class="leiste-knopf" id="wahl-check" aria-expanded="false" aria-controls="panel-check">
-        <span title="Qualitäts-Check">Check</span> <span class="badge" id="check-badge"></span>
-      </button>
-      <button type="button" class="leiste-knopf" id="wahl-daten" aria-expanded="false" aria-controls="panel-daten">
-        Daten
-      </button>
-      <button type="button" class="leiste-knopf" id="wahl-editor" aria-expanded="false" aria-controls="panel-editor">
-        Editor
-      </button>
-      <button type="button" class="leiste-knopf" id="wahl-neu" aria-expanded="false" aria-controls="panel-neu">
-        + Studio
-      </button>
-      <div class="leiste-strahl">
-        <button type="button" class="leiste-knopf" id="strahl-play" aria-pressed="false">▶ Zeitraffer</button>
-        <div class="strahl">
-          <span class="strahl-spuren" id="strahl-spuren" aria-hidden="true"></span>
-          <input type="range" id="strahl-regler" min="0" max="0" step="1" value="0" aria-label="Datum auf dem Zeitstrahl">
+      <div class="leiste-gruppe" role="group" aria-label="Auswahl">
+        <span class="leiste-gruppe-titel" aria-hidden="true">Auswahl</span>
+        <label class="leiste-feld">Studio
+          <select id="wahl-studio">${studioOptionen()}</select>
+        </label>
+        <label class="leiste-feld">Design
+          <select id="wahl-theme">${optionen(Object.entries(THEMES))}</select>
+        </label>
+        <fieldset class="ansicht-wahl">
+          <legend>Ansicht</legend>
+          <span class="ansicht-knoepfe">
+            ${Object.entries(ANSICHTEN).map(([schluessel, text]) =>
+              `<button type="button" data-ansicht="${schluessel}" aria-pressed="false">${text}</button>`).join('')}
+          </span>
+        </fieldset>
+        <button type="button" class="leiste-knopf" id="wahl-typisch" aria-pressed="false">Vergleich: typische Website</button>
+      </div>
+      <div class="leiste-gruppe leiste-gruppe-zeit" role="group" aria-label="Zeit">
+        <span class="leiste-gruppe-titel" aria-hidden="true">Zeit</span>
+        <label class="leiste-feld" for="wahl-datum">Datum</label>
+        <input type="date" id="wahl-datum" title="Datum simulieren" required>
+        <button type="button" class="leiste-knopf" id="wahl-heute">Heute</button>
+        <button type="button" class="leiste-knopf leiste-knopf-haupt" id="strahl-play" aria-pressed="false">▶ Zeitraffer</button>
+        <div class="leiste-strahl">
+          <div class="strahl">
+            <span class="strahl-spuren" id="strahl-spuren" aria-hidden="true"></span>
+            <input type="range" id="strahl-regler" min="0" max="0" step="1" value="0" aria-label="Datum auf dem Zeitstrahl">
+          </div>
+          <output class="strahl-datum" id="strahl-datum" for="strahl-regler"></output>
         </div>
-        <output class="strahl-datum" id="strahl-datum" for="strahl-regler"></output>
+      </div>
+      <div class="leiste-gruppe" role="group" aria-label="Werkzeuge">
+        <span class="leiste-gruppe-titel" aria-hidden="true">Werkzeuge</span>
+        <button type="button" class="leiste-knopf" id="wahl-check" aria-expanded="false" aria-controls="panel-check">
+          Qualitäts-Check <span class="badge" id="check-badge"></span>
+        </button>
+        <button type="button" class="leiste-knopf" id="wahl-daten" aria-expanded="false" aria-controls="panel-daten">
+          Daten (JSON)
+        </button>
+        <button type="button" class="leiste-knopf" id="wahl-editor" aria-expanded="false" aria-controls="panel-editor">
+          Live-Editor
+        </button>
+        <button type="button" class="leiste-knopf" id="wahl-neu" aria-expanded="false" aria-controls="panel-neu">
+          + Studio
+        </button>
       </div>
       </div>
     </div>

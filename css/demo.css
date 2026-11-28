@@ -95,7 +95,7 @@ body {
   gap: 0.5rem;
 }
 
-.leiste-feld input[type="date"],
+.leiste-gruppe input[type="date"],
 .leiste-feld button,
 .leiste-feld select {
   min-height: 1.9rem;
@@ -119,6 +119,37 @@ body {
   color: #f2f2f2;
   font: inherit;
   cursor: pointer;
+}
+
+/* Gruppen der Leiste: Auswahl, Zeit, Werkzeuge */
+.leiste-gruppe {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.5rem;
+}
+
+.leiste-gruppe + .leiste-gruppe {
+  padding-left: 0.75rem;
+  border-left: 1px solid #444;
+}
+
+.leiste-gruppe-zeit { flex: 1 1 26rem; }
+
+.leiste-gruppe-titel {
+  color: #b8b8b8;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.leiste-knopf.leiste-knopf-haupt,
+.leiste-knopf.leiste-knopf-haupt:hover {
+  border-color: #aaa;
+  background: #e8e8e8;
+  color: #202020;
+  font-weight: 600;
 }
 
 .leiste-knopf:hover,
@@ -242,12 +273,12 @@ body {
 .check p { margin: 0.15rem 0 0; color: #c4c4c4; }
 .check-zeichen { font-size: 1.1rem; }
 
-.leiste-feld input[type="date"] { color-scheme: dark; }
+.leiste-gruppe input[type="date"] { color-scheme: dark; }
 .leiste-feld button { cursor: pointer; }
 .leiste-feld button:hover { background: #4a4a4a; }
 
 /* Datum weicht vom echten Heute ab: auffällig markieren */
-.leiste-feld input.simuliert {
+.leiste-gruppe input.simuliert {
   border-color: #f2b84b;
   box-shadow: 0 0 0 1px #f2b84b;
 }
@@ -753,7 +784,7 @@ body {
 /* Touch: größere Ziele auf dem Handy und bei grobem Zeiger */
 @media (max-width: 720px), (pointer: coarse) {
   .leiste-knopf,
-  .leiste-feld input[type="date"],
+  .leiste-gruppe input[type="date"],
   .leiste-feld button,
   .leiste-feld select,
   .ansicht-knoepfe button,
