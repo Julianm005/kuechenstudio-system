@@ -450,8 +450,13 @@
   .fuss-raster { grid-template-columns: 1fr auto; align-items: start; }
 }
 
+/* Weniger Bewegung: keine Verschiebungen, nur kurze Farb- und Deckkraftwechsel */
 @media (prefers-reduced-motion: reduce) {
-  .website * { transition: none !important; animation: none !important; }
+  .website, .website * {
+    scroll-behavior: auto;
+    transition-property: opacity, background-color, color, border-color;
+    transition-duration: 150ms;
+  }
 }
 
 /* ---------- Kundenstimmen ---------- */

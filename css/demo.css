@@ -366,10 +366,6 @@ body {
   text-align: center;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #buehne { transition: none; }
-}
-
 /* ---------- Zeitstrahl ---------- */
 
 .leiste-strahl {
@@ -517,9 +513,15 @@ body {
   100% { box-shadow: 0 0 0 6px rgba(242, 184, 75, 0); background: transparent; }
 }
 
+/* Weniger Bewegung: Deckkraft statt Verschiebung, Farbblitze bleiben */
+@keyframes deckkraft-ein { from { opacity: 0; } to { opacity: 1; } }
+@keyframes deckkraft-aus { from { opacity: 1; } to { opacity: 0; } }
+
 @media (prefers-reduced-motion: reduce) {
-  .meldung { animation: none; transition: none; }
-  .website .aktion-neu, .website .aktion-geht, .website .status-neu { animation: none; }
+  .meldung { animation: deckkraft-ein 0.15s ease-out; transition: opacity 0.15s; }
+  .meldung.weg { transform: none; }
+  .website .aktion-neu { animation: deckkraft-ein 0.3s ease-out; }
+  .website .aktion-geht { animation: deckkraft-aus 0.3s ease-in forwards; }
 }
 
 /* ---------- Live-Editor ---------- */
@@ -610,10 +612,7 @@ body {
   100% { outline: 3px solid rgba(138, 180, 248, 0); outline-offset: -3px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .feld-blitz, .website .bereich-blitz { animation: none; }
-  .website .bereich-blitz { outline: 3px solid rgba(138, 180, 248, 0.9); outline-offset: -3px; }
-}
+/* Weniger Bewegung: die Blitze ändern nur Farbe und Rahmen, keine Bewegung */
 
 /* ---------- Such-Vorschau ---------- */
 
