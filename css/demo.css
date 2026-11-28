@@ -394,8 +394,9 @@ body {
   z-index: 1;
   display: block;
   width: 100%;
-  height: 1.7rem;
+  height: 1.9rem;
   margin: 0;
+  touch-action: pan-y;
   background: transparent;
   -webkit-appearance: none;
   appearance: none;
@@ -407,17 +408,19 @@ body {
 
 .strahl input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  margin-top: -6px;
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  margin-top: -10px;
   border: 2px solid #2b2b2b;
   border-radius: 50%;
   background: #f2f2f2;
 }
 
 .strahl input[type="range"]::-moz-range-thumb {
-  width: 12px;
-  height: 12px;
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
   border: 2px solid #2b2b2b;
   border-radius: 50%;
   background: #f2f2f2;
@@ -746,4 +749,15 @@ body {
 /* Auf breiten Bildschirmen die Höhe der gefüllten Leiste vorab reservieren (kein Layout-Versatz beim Laden) */
 @media (min-width: 1100px) {
   #demo-leiste { min-height: 5.8rem; }
+}
+
+/* Touch: größere Ziele auf dem Handy und bei grobem Zeiger */
+@media (max-width: 720px), (pointer: coarse) {
+  .leiste-knopf,
+  .leiste-feld input[type="date"],
+  .leiste-feld button,
+  .leiste-feld select,
+  .ansicht-knoepfe button,
+  .leiste-hinweis button,
+  .panel-zu { min-width: 2.75rem; min-height: 2.75rem; }
 }
