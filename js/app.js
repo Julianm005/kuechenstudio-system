@@ -972,6 +972,28 @@ async function start() {
   await zeige();
 }
 
-start().catch((fehler) => {
-  website.textContent = fehler.message;
-});
+/** Zeigt statt des rohen Fehlertexts eine verständliche Meldung. Nur textContent und DOM-Aufbau, kein innerHTML. */
+function zeigeLadefehler(fehler) {
+  console.error(fehler);
+  const kasten = document.createElement('p');
+  kasten.setAttribute('role', 'alert');
+  kasten.style.cssText = 'margin:2rem auto;max-width:40rem;padding:1rem;color:#f2f2f2;font:16px/1.5 system-ui,sans-serif';
+  if (location.protocol === 'file:') {
+    const live = 'https://julianm005.github.io/kuechenstudio-system/';
+    const code = document.createElement('code');
+    code.textContent = 'python -m http.server 8000';
+    const url = document.createElement('code');
+    url.textContent = 'http://localhost:8000';
+    const link = document.createElement('a');
+    link.href = live;
+    link.textContent = live;
+    link.style.color = '#8ab4f8';
+    kasten.append('Diese Demo braucht einen kleinen Server. Im Projektordner ', code,
+      ' starten und ', url, ' öffnen. Oder die Live-Version: ', link);
+  } else {
+    kasten.textContent = 'Die Studiodaten konnten nicht geladen werden. Bitte Seite neu laden.';
+  }
+  website.replaceChildren(kasten);
+}
+
+start().catch(zeigeLadefehler);
