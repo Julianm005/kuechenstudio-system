@@ -44,15 +44,15 @@ Grundlage: Marktstudie über rund 2.300 Küchenstudio-Websites (Juli 2026).
 
 ## Die Demo ausprobieren
 
-Oben steht die Demo-Leiste (bewusst grau und klar von der Website getrennt):
+Oben steht die Demo-Leiste (bewusst grau und klar von der Website getrennt). Sie ist in drei Gruppen gegliedert: **Auswahl** (Studio, Design, Ansicht, Vergleich), **Zeit** (Datum, Zeitraffer, Zeitstrahl) und **Werkzeuge** (Qualitäts-Check, Daten, Live-Editor, + Studio). Auf dem Handy bleibt die Zeitsteuerung sichtbar, Auswahl und Werkzeuge klappen hinter „Steuerung“ auf.
 
-- **Studio und Design** wechseln unabhängig voneinander. Der Zustand steht in der URL, z. B. `#/kuechenwerk-elbtal/atelier`, damit Links teilbar sind.
-- **Zeitstrahl und Zeitraffer:** Ein Regler über das ganze Jahr mit Balken für Aktionen (blau) und Schließzeiträume (rot). Ziehen oder „Zeitraffer“ drücken, und die Seite altert live: Aktionen verschwinden und erscheinen, der Öffnungsstatus wechselt. Jede Änderung meldet die Demo in Worten („… ist abgelaufen und wurde automatisch ausgeblendet“). Die Uhrzeit bleibt die echte. Alternativ das Datumsfeld, z. B. 16.11.2026, 28.12.2026 oder 05.01.2027.
+- **Studio und Design** wechseln unabhängig voneinander. Die Designs ändern nicht nur Farben und Schrift, sondern auch den Aufbau von Hero und Galerie (Bild vor dem Text, zentrierter Hero, große Einzelbilder). Der Zustand steht in der URL, z. B. `#/kuechenwerk-elbtal/atelier`, damit Links teilbar sind.
+- **Zeitstrahl und Zeitraffer:** Ein Regler über das ganze Jahr mit Balken für Aktionen (blau) und Schließzeiträume (rot). Ziehen oder „Zeitraffer“ drücken, und die Seite altert live: Aktionen verschwinden und erscheinen, der Öffnungsstatus wechselt. Jede Änderung meldet die Demo in Worten („… ist abgelaufen und wurde automatisch ausgeblendet“). Die Zeile „Nächste Änderung“ nennt das nächste Ereignis, in „Alle Studios“ mit Studioname. Die Uhrzeit bleibt die echte. Alternativ das Datumsfeld, z. B. 16.11.2026, 28.12.2026 oder 05.01.2027.
 - **Ansicht:** Desktop, Handy (390 px) oder alle Studios nebeneinander.
-- **Typische Website:** Zeigt dasselbe Studio so, wie die Marktstudie typische Seiten beschreibt: abgelaufene Aktion noch sichtbar, kein Live-Status, keine Ortsseiten. Rote Markierungen zählen die Probleme.
+- **Vergleich: typische Website:** Zeigt dasselbe Studio so, wie die Marktstudie typische Seiten beschreibt: abgelaufene Aktion noch sichtbar, kein Live-Status, keine Ortsseiten. Rote Markierungen zählen die Probleme.
 - **Live-Editor:** Öffnungszeiten, Aktionen, Schließzeiträume, Küchenfarben und Nachbarorte ändern, und Website, Qualitäts-Check und schema.org-Daten reagieren sofort. Nichts wird gespeichert, „Zurücksetzen“ stellt das Original wieder her, das JSON lässt sich kopieren oder herunterladen.
 - **Qualitäts-Check:** 9 Prüfungen mit ✅ in Ordnung, ⚙️ automatisch gelöst, ⚠️ Warnung, ❌ Fehler. Küchenwerk Elbtal erreicht 9/9, Landhausküchen Moritzburg zeigt bewusst zwei Warnungen. Bei jeder Warnung springt „Im Editor beheben“ direkt zum passenden Feld.
-- **Daten:** das Studio-JSON, das daraus erzeugte JSON-LD und „So sieht die Suche dich“, eine neutrale Vorschau, wie Suchmaschinen Name, Status, Öffnungszeiten und Einzugsgebiet aus den strukturierten Daten lesen.
+- **Daten (JSON):** das Studio-JSON, das daraus erzeugte JSON-LD und „So sieht die Suche dich“, eine neutrale Vorschau, wie Suchmaschinen Name, Status, Öffnungszeiten und Einzugsgebiet aus den strukturierten Daten lesen.
 - **+ Studio:** Ein neues Studio entsteht aus einer Vorlage in Sekunden. Der Check zeigt danach, was noch fehlt.
 - **Auf der Website selbst:** Beratungstermin-Formular (nur freie Zeiten innerhalb der Öffnungszeiten, Schließtage gesperrt), Farbwähler unter dem Hero-Bild und auf dem Handy eine feste Schnellleiste (Anrufen, Termin, Besuch).
 
@@ -107,6 +107,7 @@ js/check.js           Qualitäts-Check
 - **Kundenstimmen sind erfunden** und stehen nur als Text auf der Seite. Sie sind absichtlich nicht Teil der schema.org-Daten, denn erfundene Bewertungen in strukturierten Daten wären ein Verstoß gegen die Richtlinien der Suchmaschinen.
 - **Das Terminformular sendet nichts.** Es zeigt nur, wie Öffnungszeiten und Schließtage die Auswahl steuern.
 - **Der Live-Editor speichert nichts.** Änderungen leben im Speicher der Seite, ein Neuladen stellt die Originaldaten wieder her.
+- **Touch-Bedienung ungeprüft auf echten Geräten.** Der Zeitstrahl mit größerem Griff und die größeren Schaltflächen auf dem Handy wurden nur per CSS-Prüfung und in der emulierten Handy-Ansicht gedacht, nicht auf einem echten Gerät getestet. Die Lighthouse-Werte unten stammen noch aus der Messung vor diesem Umbau.
 
 ## Qualität
 
