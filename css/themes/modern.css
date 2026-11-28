@@ -14,3 +14,9 @@
   --head-weight: 800;
   --head-spacing: -0.01em;
 }
+
+/* Aufbau: Bild vor dem Text, dichtere Galerie */
+[data-theme="modern"] {
+  --hero-bild-order: -1;
+  --galerie-min: 15rem;
+}

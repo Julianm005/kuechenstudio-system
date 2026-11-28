@@ -53,3 +53,9 @@
 [data-theme="atelier"] .karte { border-color: var(--line); }
 [data-theme="atelier"] .aktion { border-left-color: var(--accent); }
 [data-theme="atelier"] .sektion-flaeche .karte { background: var(--bg); }
+
+/* Aufbau: das Bild dominiert, große Einzelbilder in der Galerie */
+[data-theme="atelier"] {
+  --hero-spalten: 1fr 1.6fr;
+  --galerie-min: 26rem;
+}

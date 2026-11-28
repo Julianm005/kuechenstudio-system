@@ -213,8 +213,13 @@
 
 .hero-bild svg { border-radius: var(--radius); }
 
+/* Aufbau pro Theme über Variablen: --hero-spalten, --hero-bild-order, --hero-text-ausrichtung, --galerie-min */
+.hero-text { text-align: var(--hero-text-ausrichtung, start); }
+.hero-text .buttons { justify-content: var(--hero-text-ausrichtung, start); }
+
 @container (min-width: 52rem) {
-  .hero-raster { grid-template-columns: 1fr 1.1fr; gap: 3rem; }
+  .hero-raster { grid-template-columns: var(--hero-spalten, 1fr 1.1fr); gap: 3rem; }
+  .hero-bild { order: var(--hero-bild-order, 0); }
 }
 
 /* ---------- Sektionen und Raster ---------- */
@@ -236,7 +241,7 @@
 
 .raster-aktionen { grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); }
 .raster-vorteile { grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
-.raster-kuechen  { grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 1.5rem; }
+.raster-kuechen  { grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--galerie-min, 18rem)), 1fr)); gap: 1.5rem; }
 .raster-team     { grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); }
 
 .karte {
