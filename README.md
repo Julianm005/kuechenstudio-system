@@ -107,7 +107,7 @@ js/check.js           Qualitäts-Check
 - **Kundenstimmen sind erfunden** und stehen nur als Text auf der Seite. Sie sind absichtlich nicht Teil der schema.org-Daten, denn erfundene Bewertungen in strukturierten Daten wären ein Verstoß gegen die Richtlinien der Suchmaschinen.
 - **Das Terminformular sendet nichts.** Es zeigt nur, wie Öffnungszeiten und Schließtage die Auswahl steuern.
 - **Der Live-Editor speichert nichts.** Änderungen leben im Speicher der Seite, ein Neuladen stellt die Originaldaten wieder her.
-- **Touch-Bedienung ungeprüft auf echten Geräten.** Der Zeitstrahl mit größerem Griff und die größeren Schaltflächen auf dem Handy wurden nur per CSS-Prüfung und in der emulierten Handy-Ansicht gedacht, nicht auf einem echten Gerät getestet. Die Lighthouse-Werte unten stammen noch aus der Messung vor diesem Umbau.
+- **Touch-Bedienung ungeprüft auf echten Geräten.** Der Zeitstrahl mit größerem Griff und die größeren Schaltflächen auf dem Handy sind noch nicht auf einem echten Gerät getestet. Die Lighthouse-Werte unten stammen noch aus der Messung vor diesem Umbau.
 
 ## Qualität
 
