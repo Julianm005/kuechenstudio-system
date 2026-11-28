@@ -48,7 +48,6 @@ Oben steht die Demo-Leiste (bewusst grau und klar von der Website getrennt):
 
 - **Studio und Design** wechseln unabhängig voneinander. Der Zustand steht in der URL, z. B. `#/kuechenwerk-elbtal/atelier`, damit Links teilbar sind.
 - **Zeitstrahl und Zeitraffer:** Ein Regler über das ganze Jahr mit Balken für Aktionen (blau) und Schließzeiträume (rot). Ziehen oder „Zeitraffer“ drücken, und die Seite altert live: Aktionen verschwinden und erscheinen, der Öffnungsstatus wechselt. Jede Änderung meldet die Demo in Worten („… ist abgelaufen und wurde automatisch ausgeblendet“). Die Uhrzeit bleibt die echte. Alternativ das Datumsfeld, z. B. 16.11.2026, 28.12.2026 oder 05.01.2027.
-- **Studio und Design** wechseln unabhängig voneinander. Der Zustand steht in der URL, z. B. `#/kuechenwerk-elbtal/atelier`, damit Links teilbar sind.
 - **Ansicht:** Desktop, Handy (390 px) oder alle Studios nebeneinander.
 - **Typische Website:** Zeigt dasselbe Studio so, wie die Marktstudie typische Seiten beschreibt: abgelaufene Aktion noch sichtbar, kein Live-Status, keine Ortsseiten. Rote Markierungen zählen die Probleme.
 - **Live-Editor:** Öffnungszeiten, Aktionen, Schließzeiträume, Küchenfarben und Nachbarorte ändern, und Website, Qualitäts-Check und schema.org-Daten reagieren sofort. Nichts wird gespeichert, „Zurücksetzen“ stellt das Original wieder her, das JSON lässt sich kopieren oder herunterladen.
