@@ -161,6 +161,27 @@ export function aenderungen(studio, von, nach) {
 }
 
 /**
+ * Nächster Tag nach „ab“, an dem sich auf einer der Websites etwas ändert (Aktion, Schließzeit, Hinweis).
+ * Sucht 800 Tage voraus. Bei gleichem Tag gewinnt das Studio weiter vorn in der Liste.
+ * @returns {{datum: Date, studio: object, text: string} | null} null, wenn im Suchfenster nichts passiert
+ */
+export function naechsteAenderung(studioListe, ab) {
+  let beste = null;
+  for (const studio of studioListe) {
+    for (let n = 1; n <= 800; n++) {
+      const datum = tagPlusN(ab, n);
+      if (beste && datum >= beste.datum) break;
+      const liste = aenderungen(studio, ab, datum);
+      if (liste.length > 0) {
+        beste = { datum, studio, text: liste[0].text };
+        break;
+      }
+    }
+  }
+  return beste;
+}
+
+/**
  * Datumsbereich für den Zeitstrahl: alle Aktionen und Schließzeiten aller Studios plus Puffer,
  * dazu immer das heutige Datum.
  */

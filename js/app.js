@@ -4,7 +4,7 @@
 
 import { esc, renderSeite, seitenAttribute } from './render.js';
 import {
-  isoDatum, parseDatum, tagPlusN, tageZwischen, aenderungen, zeitraumAllerStudios,
+  isoDatum, parseDatum, tagPlusN, tageZwischen, aenderungen, zeitraumAllerStudios, naechsteAenderung, kurzDatum,
 } from './zeit.js';
 import { spurenHtml, tageImBereich } from './zeitstrahl.js';
 import { zeigeMeldungen } from './meldungen.js';
@@ -156,6 +156,7 @@ function baueLeiste() {
           </div>
           <output class="strahl-datum" id="strahl-datum" for="strahl-regler"></output>
         </div>
+        <output class="strahl-naechste" id="strahl-naechste" aria-live="off"></output>
       </div>
       <div class="leiste-gruppe" role="group" aria-label="Werkzeuge">
         <span class="leiste-gruppe-titel" aria-hidden="true">Werkzeuge</span>
@@ -452,6 +453,12 @@ function aktualisiereStrahl(studio) {
   regler.value = String(Math.min(letzter, Math.max(0, tageZwischen(bereich.start, simuliertesDatum))));
   regler.setAttribute('aria-valuetext', deDatum(simuliertesDatum));
   leiste.querySelector('#strahl-datum').textContent = deDatum(simuliertesDatum);
+  const naechste = naechsteAenderung(sichtbar, simuliertesDatum);
+  const zeile = naechste
+    ? `Nächste Änderung: ${kurzDatum(naechste.datum)} · ${ansicht === 'alle' ? `${naechste.studio.name}: ` : ''}${naechste.text}`
+    : 'Keine weiteren Änderungen';
+  const ausgabe = leiste.querySelector('#strahl-naechste');
+  if (ausgabe.textContent !== zeile) ausgabe.textContent = zeile;
 }
 
 function stoppeZeitraffer() {
@@ -484,6 +491,12 @@ function starteZeitraffer() {
 /** Setzt das simulierte Datum und zeigt die Seite ohne Ausblenden, nur mit Animation der Änderungen. */
 function setzeDatum(datum) {
   simuliertesDatum = datum;
+  // Nach der ersten Datumsänderung hat der Besucher den Hinweis umgesetzt: ausblenden
+  const hinweis = leiste.querySelector('#leiste-hinweis');
+  if (hinweis && !hinweis.hidden) {
+    hinweis.hidden = true;
+    merkeHinweisGesehen();
+  }
   zeige('datum');
 }
 
